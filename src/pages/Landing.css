@@ -161,12 +161,15 @@
   display: block;
   font-size: clamp(56px, 13vw, 180px);
   line-height: 0.88;
-  /* Identical fixed-attachment, viewport-sized background on all three lines
-     means each shows the slice of the truck photo that's actually behind it
-     at that point in the viewport — the letters read as one continuous
-     window onto the photo, not three separate crops. */
+  /* Identical fixed-attachment background on all three lines means each
+     shows the slice of the truck photo that's actually behind it at that
+     point in the viewport — the letters read as one continuous window onto
+     the photo, not three separate crops. `cover` (rather than a literal
+     100vw/100vh stretch) keeps the photo's own proportions on any screen —
+     stretching it to fit a narrow, tall phone viewport exactly squashed it
+     into unrecognizable color blocks. */
   background-attachment: fixed;
-  background-size: 100vw 100vh;
+  background-size: cover;
   background-position: center;
   background-clip: text;
   -webkit-background-clip: text;
