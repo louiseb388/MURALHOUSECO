@@ -107,14 +107,6 @@ figcaption {
   100% { left: 130%; opacity: 0; }
 }
 
-/* Circular ghost icon buttons on the dark hero image */
-.btn-icon--on-dark {
-  background: transparent;
-  border-color: var(--color-bg);
-  color: var(--color-bg);
-  border-radius: 50%;
-}
-
 /* — forms — */
 .field > label {
   display: block; font-size: 12px; margin-bottom: 5px;

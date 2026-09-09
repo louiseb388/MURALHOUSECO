@@ -4,16 +4,7 @@ import { NavBar } from '../components/NavBar';
 import { Footer } from '../components/Footer';
 import { QuoteWizard } from '../components/QuoteWizard';
 import { IntroMask } from '../components/IntroMask';
-import {
-  CalendarCheckIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  MapPinIcon,
-  PaintRollerIcon,
-  PauseIcon,
-  PencilIcon,
-  PlayIcon,
-} from '../components/Icons';
+import { CalendarCheckIcon, ChevronLeftIcon, ChevronRightIcon, MapPinIcon, PaintRollerIcon, PencilIcon } from '../components/Icons';
 import { banners, howItWorks, testimonials } from '../data/content';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import './Landing.css';
@@ -21,22 +12,19 @@ import './Landing.css';
 // One icon per howItWorks entry, in order (site visit, booked in, design agreed, painted on site).
 const HOW_IT_WORKS_ICONS = [MapPinIcon, CalendarCheckIcon, PencilIcon, PaintRollerIcon];
 
-const CAROUSEL_INTERVAL_MS = 5000;
-const CAROUSEL_TRANSITION_MS = 800;
-const INTRO_DWELL_MS = 2000;
-const INTRO_LIFT_MS = 900;
-
-type SlideState = { active: number; exiting: number | null };
+// Hero steps: 0 = masked wordmark intro, 1..banners.length = one per banner
+// photo. Each step owns one viewport-height of scroll — see .hero-scroll's
+// height in Landing.css, which must stay at HERO_STEPS * 100vh.
+const HERO_STEPS = banners.length + 1;
 
 export function Landing() {
   useDocumentTitle('Mural House: hand-painted wall murals');
 
   const [searchParams] = useSearchParams();
   const [wizardOpen, setWizardOpen] = useState(false);
-  const [introPhase, setIntroPhase] = useState<'mask' | 'lifting' | 'done'>('mask');
-  const [slideState, setSlideState] = useState<SlideState>({ active: 0, exiting: null });
-  const [bannerPlaying, setBannerPlaying] = useState(true);
   const [testimonialIndex, setTestimonialIndex] = useState(0);
+  const [heroProgress, setHeroProgress] = useState(0); // continuous, 0..HERO_STEPS
+  const heroScrollRef = useRef<HTMLDivElement>(null);
 
   // Read on mount only, matching the design's "?quote=1 auto-opens the wizard" behavior.
   useEffect(() => {
@@ -44,58 +32,37 @@ export function Landing() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // One-time intro: dwell on the giant masked wordmark, then lift it away.
-  // Skipped for reduced-motion users, who land straight on the full hero.
+  // Drives the whole hero sequence: how far the user has scrolled through
+  // the tall .hero-scroll wrapper, expressed as a continuous value from 0
+  // (top, mask fully down) to HERO_STEPS (past the last banner). The mask
+  // scrubs 1:1 with this within step 0; steps 1+ just read off the floor.
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setIntroPhase('done');
-      return;
-    }
-    const liftTimer = setTimeout(() => setIntroPhase('lifting'), INTRO_DWELL_MS);
-    return () => clearTimeout(liftTimer);
+    const wrapper = heroScrollRef.current;
+    if (!wrapper) return;
+    let raf = 0;
+    const measure = () => {
+      const rect = wrapper.getBoundingClientRect();
+      const total = rect.height - window.innerHeight;
+      const scrolled = Math.min(Math.max(-rect.top, 0), Math.max(total, 0));
+      setHeroProgress(total > 0 ? (scrolled / total) * HERO_STEPS : 0);
+    };
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(measure);
+    };
+    measure();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      cancelAnimationFrame(raf);
+    };
   }, []);
 
-  useEffect(() => {
-    if (introPhase !== 'lifting') return;
-    const doneTimer = setTimeout(() => setIntroPhase('done'), INTRO_LIFT_MS);
-    return () => clearTimeout(doneTimer);
-  }, [introPhase]);
-
-  // Steps the carousel by `step` slides, sliding the outgoing image up to
-  // reveal the next one (already sitting static underneath). Ignored while a
-  // transition is already in flight.
-  const advance = (step: number) => {
-    setSlideState((s) => {
-      if (s.exiting !== null) return s;
-      const next = (s.active + step + banners.length) % banners.length;
-      return { active: next, exiting: s.active };
-    });
-  };
-  const goToBanner = (index: number) => {
-    setSlideState((s) => (s.exiting !== null || s.active === index ? s : { active: index, exiting: s.active }));
-  };
-
-  // Clears the exiting slide once its slide-up transition has finished.
-  useEffect(() => {
-    if (slideState.exiting === null) return;
-    const t = setTimeout(() => {
-      setSlideState((s) => ({ ...s, exiting: null }));
-    }, CAROUSEL_TRANSITION_MS);
-    return () => clearTimeout(t);
-  }, [slideState.exiting]);
-
-  const bannerPlayingRef = useRef(bannerPlaying);
-  bannerPlayingRef.current = bannerPlaying;
-
-  // Autoplay only starts once the intro has finished handing off to the full hero.
-  useEffect(() => {
-    if (introPhase !== 'done') return;
-    const timer = setInterval(() => {
-      if (bannerPlayingRef.current) advance(1);
-    }, CAROUSEL_INTERVAL_MS);
-    return () => clearInterval(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [introPhase]);
+  const heroStep = Math.min(HERO_STEPS - 1, Math.floor(heroProgress));
+  const maskProgress = Math.min(1, heroProgress);
+  const activeBanner = heroStep >= 1 ? banners[heroStep - 1] : null;
 
   const nextTestimonial = () => setTestimonialIndex((i) => (i + 1) % testimonials.length);
   const prevTestimonial = () => setTestimonialIndex((i) => (i - 1 + testimonials.length) % testimonials.length);
@@ -106,101 +73,50 @@ export function Landing() {
     <>
       <NavBar onQuoteClick={() => setWizardOpen(true)} />
 
-      {introPhase !== 'done' && <IntroMask lifted={introPhase === 'lifting'} imageSrc={banners[0].src} />}
-
-      <div className="hero">
-        {banners.map((banner, i) => {
-          const isExiting = i === slideState.exiting;
-          const isActive = i === slideState.active;
-          return (
-            <div
+      <div ref={heroScrollRef} className="hero-scroll">
+        <div className="hero">
+          {banners.map((banner) => (
+            <img
               key={banner.id}
-              className="hero__slide-layer"
+              src={banner.src}
+              alt=""
+              className="hero__slide"
               style={{
-                zIndex: isExiting ? 3 : isActive ? 2 : 1,
-                transform: `translateY(${isExiting ? '-100%' : '0%'})`,
-                transitionDuration: `${CAROUSEL_TRANSITION_MS}ms`,
+                display: activeBanner === banner ? 'block' : 'none',
+                objectPosition: banner.objectPosition,
+                transform: `scale(${banner.scale})`,
+                transformOrigin: banner.transformOrigin,
               }}
-            >
-              <img
-                src={banner.src}
-                alt=""
-                className="hero__slide"
-                style={{
-                  objectPosition: banner.objectPosition,
-                  transform: `scale(${banner.scale})`,
-                  transformOrigin: banner.transformOrigin,
-                }}
-              />
-            </div>
-          );
-        })}
-
-        <p className="hero__sub">Residential and commercial sites. Covering Surrey &amp; West Sussex.</p>
-
-        <div className="hero__progress">
-          {banners.map((banner, i) => (
-            <button
-              key={banner.id}
-              type="button"
-              aria-label="Go to image"
-              className="hero__progress-seg"
-              onClick={() => goToBanner(i)}
-              style={{ background: i === slideState.active ? 'var(--color-bg)' : 'rgba(255,255,255,0.4)' }}
             />
           ))}
-        </div>
 
-        <div className="hero__controls">
-          <button
-            type="button"
-            className="btn btn-secondary btn-icon btn-icon--on-dark"
-            aria-label="Previous image"
-            onClick={() => advance(-1)}
-          >
-            <ChevronLeftIcon />
-          </button>
-          <button
-            type="button"
-            className="btn btn-secondary btn-icon btn-icon--on-dark"
-            aria-label="Next image"
-            onClick={() => advance(1)}
-          >
-            <ChevronRightIcon />
-          </button>
-          {bannerPlaying ? (
-            <button
-              type="button"
-              className="btn btn-secondary btn-icon btn-icon--on-dark"
-              aria-label="Pause slideshow"
-              onClick={() => setBannerPlaying(false)}
-            >
-              <PauseIcon />
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="btn btn-secondary btn-icon btn-icon--on-dark"
-              aria-label="Play slideshow"
-              onClick={() => setBannerPlaying(true)}
-            >
-              <PlayIcon />
-            </button>
+          <div className="hero__scrim" />
+
+          {activeBanner && (
+            <div className="hero__content">
+              <h1 className="hero__step-heading">
+                <span>{activeBanner.headline.line1}</span>
+                <span>{activeBanner.headline.line2}</span>
+              </h1>
+              <button type="button" className="btn btn-primary btn-cta" onClick={() => setWizardOpen(true)}>
+                Get instant quote
+              </button>
+            </div>
           )}
-        </div>
 
-        <div className="hero__scrim" />
+          <p className="hero__sub">Residential and commercial sites. Covering Surrey &amp; West Sussex.</p>
 
-        <div className="hero__content">
-          <h1 className="hero__heading">
-            <span>Wall murals,</span>
-            <span>hand-painted.</span>
-          </h1>
-          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-            <button type="button" className="btn btn-primary btn-cta" onClick={() => setWizardOpen(true)}>
-              Get instant quote
-            </button>
+          <div className="hero__progress">
+            {Array.from({ length: HERO_STEPS }, (_, i) => (
+              <div
+                key={i}
+                className="hero__progress-seg"
+                style={{ background: i === heroStep ? 'var(--color-bg)' : 'rgba(255,255,255,0.4)' }}
+              />
+            ))}
           </div>
+
+          {heroStep === 0 && <IntroMask progress={maskProgress} imageSrc={banners[0].src} />}
         </div>
       </div>
 

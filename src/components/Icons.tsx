@@ -38,28 +38,19 @@ export function ChevronRightIcon(props: IconProps) {
   );
 }
 
+export function ChevronDownIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M6 9l6 6 6-6" />
+    </Icon>
+  );
+}
+
 export function XIcon(props: IconProps) {
   return (
     <Icon {...props}>
       <path d="M18 6 6 18" />
       <path d="M6 6l12 12" />
-    </Icon>
-  );
-}
-
-export function PauseIcon(props: IconProps) {
-  return (
-    <Icon {...props}>
-      <rect x="6" y="4" width="4" height="16" />
-      <rect x="14" y="4" width="4" height="16" />
-    </Icon>
-  );
-}
-
-export function PlayIcon(props: IconProps) {
-  return (
-    <Icon {...props}>
-      <path d="M5 3l16 9-16 9V3z" />
     </Icon>
   );
 }

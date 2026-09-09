@@ -8,6 +8,7 @@ export type Banner = {
   objectPosition: string;
   scale: number;
   transformOrigin: string;
+  headline: { line1: string; line2: string };
 };
 
 export const banners: Banner[] = [
@@ -17,6 +18,7 @@ export const banners: Banner[] = [
     objectPosition: 'top right',
     scale: 1.183,
     transformOrigin: 'top right',
+    headline: { line1: 'Wall murals,', line2: 'kids rooms.' },
   },
   {
     id: 'hero-banner-2',
@@ -24,6 +26,7 @@ export const banners: Banner[] = [
     objectPosition: 'center',
     scale: 1.183,
     transformOrigin: 'top left',
+    headline: { line1: 'Wall murals,', line2: 'commercial.' },
   },
   {
     id: 'hero-banner-3',
@@ -31,6 +34,7 @@ export const banners: Banner[] = [
     objectPosition: 'left bottom',
     scale: 3.6,
     transformOrigin: 'top left',
+    headline: { line1: 'Wall murals,', line2: 'man cave.' },
   },
 ];
 
