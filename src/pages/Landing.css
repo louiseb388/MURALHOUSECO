@@ -191,12 +191,11 @@
   font-size: clamp(64px, 15vw, 210px);
   line-height: 0.88;
   /* Identical fixed-attachment background on all three lines means each
-     shows the slice of the current carousel photo that's actually behind it
-     at that point in the viewport — the letters read as one continuous
-     window onto that photo, not three separate crops. Which photo (see
-     imageSrc in Landing.tsx) swaps every second along with the rest of the
-     carousel, so the mask flicks through the same truck/helmet/motorbike
-     loop as the revealed hero underneath it. */
+     shows the slice of the truck photo that's actually behind it at that
+     point in the viewport — the letters read as one continuous window onto
+     the photo (not three separate crops), with the plain wall on the left
+     of the source photo showing through as white space behind M/H, and the
+     truck itself carrying through the remaining letters. */
   background-attachment: fixed;
   background-size: cover;
   background-position: center;

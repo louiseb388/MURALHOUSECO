@@ -11,11 +11,10 @@ type IntroMaskProps = {
 
 /**
  * Hero intro mask: "MURAL / HOUSE / CO." set huge, dead center, in the
- * wordmark face, each line background-clipped to whichever hero photo the
- * carousel is currently showing — so the mask flicks through the same
- * truck/helmet/motorbike loop as the hero underneath it. All three lines
- * share the same fixed-attachment background so each frame reads as one
- * continuous photo behind the stack, not three separate crops.
+ * wordmark face, each line background-clipped to the same single hero photo
+ * so it shows through the letters only. All three lines share the same
+ * fixed-attachment background so the image reads as one continuous photo
+ * behind the stack, not three separate crops.
  */
 export function IntroMask({ progress, imageSrc }: IntroMaskProps) {
   const maskStyle: CSSProperties = { backgroundImage: `url(${imageSrc})` };

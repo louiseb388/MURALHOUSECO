@@ -135,7 +135,10 @@ export function Landing() {
             ))}
           </div>
 
-          <IntroMask progress={maskProgress} imageSrc={activeBanner.src} />
+          {/* Fixed on the first banner, not activeBanner — the mask is a
+              single static image behind all three words, independent of the
+              carousel ticking away underneath it. */}
+          <IntroMask progress={maskProgress} imageSrc={banners[0].src} />
         </div>
       </div>
 
