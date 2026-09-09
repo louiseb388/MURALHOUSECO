@@ -1,11 +1,5 @@
 @import './tokens.css';
 
-@font-face {
-  font-family: 'Funland';
-  src: url('/fonts/Funland.otf') format('opentype');
-  font-display: swap;
-}
-
 *, *::before, *::after { box-sizing: border-box; }
 
 html { color-scheme: light; }
@@ -166,14 +160,20 @@ textarea.input { min-height: 90px; resize: vertical; font-family: inherit; }
   flex-wrap: wrap; row-gap: 8px;
   padding-block: var(--space-3);
 }
+/* Shared wordmark treatment: extra-bold Helvetica caps. Used at nav scale by
+   .logo, and at hero scale by Landing's intro mask (see Landing.css). */
+.wordmark {
+  font-family: var(--font-wordmark);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+}
 .logo {
-  font-size: 36px;
-  font-family: 'Funland', var(--font-heading);
+  font-size: 21px;
+  line-height: 1;
   text-decoration: none;
   color: inherit;
-  -webkit-text-stroke: 5px var(--color-text);
-  paint-order: stroke fill;
-  line-height: 1;
+  white-space: nowrap;
 }
 .nav__phone {
   white-space: nowrap;

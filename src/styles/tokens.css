@@ -14,6 +14,9 @@
   --font-heading: 'Archivo', system-ui, sans-serif;
   --font-heading-weight: 800;
   --font-body: 'Archivo', system-ui, sans-serif;
+  /* Wordmark only — nav logo and hero intro mask. Kept distinct from Archivo
+     (the type used for everything else) as a deliberate brand accent. */
+  --font-wordmark: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 
   --space-1: 4px;
   --space-2: 8px;

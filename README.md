@@ -24,5 +24,5 @@ npm run preview  # preview the production build locally
 
 ## Notes
 
-- The `Funland` logo font (`public/fonts/Funland.otf`) and hero photos (`src/assets/`) are the client-supplied placeholder assets from the design handoff. Confirm the font's license and swap in final professional photography before using this in production.
+- The wordmark uses Helvetica Neue/Arial (system fonts, no licensing to track). The hero photos (`src/assets/`) are the client-supplied placeholders from the design handoff — swap in final professional photography before production.
 - The phone number in the header (`01234 567 890`) is a placeholder — replace with the real number.

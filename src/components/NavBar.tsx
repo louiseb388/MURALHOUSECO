@@ -10,7 +10,7 @@ export function NavBar({ onQuoteClick }: NavBarProps) {
   return (
     <nav className="nav">
       <div className="container nav__row">
-        <Link to="/" className="logo">
+        <Link to="/" className="logo wordmark">
           Mural House Co.
         </Link>
         <a href="tel:01234567890" className="nav__phone">

@@ -3,19 +3,26 @@ import { useSearchParams } from 'react-router-dom';
 import { NavBar } from '../components/NavBar';
 import { Footer } from '../components/Footer';
 import { QuoteWizard } from '../components/QuoteWizard';
+import { IntroMask } from '../components/IntroMask';
 import { ChevronLeftIcon, ChevronRightIcon, PauseIcon, PlayIcon } from '../components/Icons';
 import { banners, howItWorks, testimonials } from '../data/content';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import './Landing.css';
 
-const BANNER_INTERVAL_MS = 5000;
+const CAROUSEL_INTERVAL_MS = 5000;
+const CAROUSEL_TRANSITION_MS = 800;
+const INTRO_DWELL_MS = 2000;
+const INTRO_LIFT_MS = 900;
+
+type SlideState = { active: number; exiting: number | null };
 
 export function Landing() {
   useDocumentTitle('Mural House: hand-painted wall murals');
 
   const [searchParams] = useSearchParams();
   const [wizardOpen, setWizardOpen] = useState(false);
-  const [bannerIndex, setBannerIndex] = useState(0);
+  const [introPhase, setIntroPhase] = useState<'mask' | 'lifting' | 'done'>('mask');
+  const [slideState, setSlideState] = useState<SlideState>({ active: 0, exiting: null });
   const [bannerPlaying, setBannerPlaying] = useState(true);
   const [testimonialIndex, setTestimonialIndex] = useState(0);
 
@@ -25,20 +32,59 @@ export function Landing() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // One-time intro: dwell on the giant masked wordmark, then lift it away.
+  // Skipped for reduced-motion users, who land straight on the full hero.
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setIntroPhase('done');
+      return;
+    }
+    const liftTimer = setTimeout(() => setIntroPhase('lifting'), INTRO_DWELL_MS);
+    return () => clearTimeout(liftTimer);
+  }, []);
+
+  useEffect(() => {
+    if (introPhase !== 'lifting') return;
+    const doneTimer = setTimeout(() => setIntroPhase('done'), INTRO_LIFT_MS);
+    return () => clearTimeout(doneTimer);
+  }, [introPhase]);
+
+  // Steps the carousel by `step` slides, sliding the outgoing image up to
+  // reveal the next one (already sitting static underneath). Ignored while a
+  // transition is already in flight.
+  const advance = (step: number) => {
+    setSlideState((s) => {
+      if (s.exiting !== null) return s;
+      const next = (s.active + step + banners.length) % banners.length;
+      return { active: next, exiting: s.active };
+    });
+  };
+  const goToBanner = (index: number) => {
+    setSlideState((s) => (s.exiting !== null || s.active === index ? s : { active: index, exiting: s.active }));
+  };
+
+  // Clears the exiting slide once its slide-up transition has finished.
+  useEffect(() => {
+    if (slideState.exiting === null) return;
+    const t = setTimeout(() => {
+      setSlideState((s) => ({ ...s, exiting: null }));
+    }, CAROUSEL_TRANSITION_MS);
+    return () => clearTimeout(t);
+  }, [slideState.exiting]);
+
   const bannerPlayingRef = useRef(bannerPlaying);
   bannerPlayingRef.current = bannerPlaying;
 
+  // Autoplay only starts once the intro has finished handing off to the full hero.
   useEffect(() => {
+    if (introPhase !== 'done') return;
     const timer = setInterval(() => {
-      if (bannerPlayingRef.current) {
-        setBannerIndex((i) => (i + 1) % banners.length);
-      }
-    }, BANNER_INTERVAL_MS);
+      if (bannerPlayingRef.current) advance(1);
+    }, CAROUSEL_INTERVAL_MS);
     return () => clearInterval(timer);
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [introPhase]);
 
-  const nextBanner = () => setBannerIndex((i) => (i + 1) % banners.length);
-  const prevBanner = () => setBannerIndex((i) => (i - 1 + banners.length) % banners.length);
   const nextTestimonial = () => setTestimonialIndex((i) => (i + 1) % testimonials.length);
   const prevTestimonial = () => setTestimonialIndex((i) => (i - 1 + testimonials.length) % testimonials.length);
 
@@ -48,21 +94,35 @@ export function Landing() {
     <>
       <NavBar onQuoteClick={() => setWizardOpen(true)} />
 
+      {introPhase !== 'done' && <IntroMask lifted={introPhase === 'lifting'} imageSrc={banners[0].src} />}
+
       <div className="hero">
-        {banners.map((banner, i) => (
-          <img
-            key={banner.id}
-            src={banner.src}
-            alt=""
-            className="hero__slide"
-            style={{
-              objectPosition: banner.objectPosition,
-              transform: `scale(${banner.scale})`,
-              transformOrigin: banner.transformOrigin,
-              opacity: i === bannerIndex ? 1 : 0,
-            }}
-          />
-        ))}
+        {banners.map((banner, i) => {
+          const isExiting = i === slideState.exiting;
+          const isActive = i === slideState.active;
+          return (
+            <div
+              key={banner.id}
+              className="hero__slide-layer"
+              style={{
+                zIndex: isExiting ? 3 : isActive ? 2 : 1,
+                transform: `translateY(${isExiting ? '-100%' : '0%'})`,
+                transitionDuration: `${CAROUSEL_TRANSITION_MS}ms`,
+              }}
+            >
+              <img
+                src={banner.src}
+                alt=""
+                className="hero__slide"
+                style={{
+                  objectPosition: banner.objectPosition,
+                  transform: `scale(${banner.scale})`,
+                  transformOrigin: banner.transformOrigin,
+                }}
+              />
+            </div>
+          );
+        })}
 
         <p className="hero__sub">Residential and commercial sites. Covering Surrey &amp; West Sussex.</p>
 
@@ -73,8 +133,8 @@ export function Landing() {
               type="button"
               aria-label="Go to image"
               className="hero__progress-seg"
-              onClick={() => setBannerIndex(i)}
-              style={{ background: i === bannerIndex ? 'var(--color-bg)' : 'rgba(255,255,255,0.4)' }}
+              onClick={() => goToBanner(i)}
+              style={{ background: i === slideState.active ? 'var(--color-bg)' : 'rgba(255,255,255,0.4)' }}
             />
           ))}
         </div>
@@ -84,7 +144,7 @@ export function Landing() {
             type="button"
             className="btn btn-secondary btn-icon btn-icon--on-dark"
             aria-label="Previous image"
-            onClick={prevBanner}
+            onClick={() => advance(-1)}
           >
             <ChevronLeftIcon />
           </button>
@@ -92,7 +152,7 @@ export function Landing() {
             type="button"
             className="btn btn-secondary btn-icon btn-icon--on-dark"
             aria-label="Next image"
-            onClick={nextBanner}
+            onClick={() => advance(1)}
           >
             <ChevronRightIcon />
           </button>
