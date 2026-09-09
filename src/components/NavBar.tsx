@@ -18,11 +18,11 @@ export function NavBar({ onQuoteClick }: NavBarProps) {
         </a>
         {onQuoteClick ? (
           <button type="button" className="btn btn-primary btn-cta" onClick={onQuoteClick}>
-            Get instant quote
+            Get started
           </button>
         ) : (
           <Link to="/?quote=1" className="btn btn-primary btn-cta">
-            Get instant quote
+            Get started
           </Link>
         )}
       </div>

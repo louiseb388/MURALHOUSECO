@@ -7,8 +7,10 @@
   position: relative;
   height: 400vh; /* HERO_STEPS (4) * 100vh */
 }
-/* Hero stacking order (low to high): banners (default) < scrim (4) <
-   heading/CTA content (5) < subheading/progress (6) < intro mask (20). */
+/* Hero stacking order (low to high): banners (1..banners.length, later
+   photos stack on top and crossfade in over earlier ones — see bannerOpacity
+   in Landing.tsx) < scrim (4) < heading/CTA content (5) < subheading/
+   progress (6) < intro mask (20). */
 .hero {
   position: sticky;
   top: 0;
@@ -43,8 +45,8 @@
   text-align: center;
 }
 .hero__step-heading {
-  font-size: clamp(40px, 8vw, 96px);
-  line-height: 1.02;
+  font-size: clamp(52px, 11vw, 140px);
+  line-height: 1.0;
   letter-spacing: -0.02em;
   text-transform: uppercase;
   margin: 0;
@@ -165,23 +167,22 @@
   background: var(--color-text);
 }
 .intro-mask {
-  width: min(1200px, 92vw);
+  width: min(1300px, 92vw);
   text-align: center;
 }
 .intro-mask__line {
   display: block;
-  font-size: clamp(56px, 13vw, 180px);
+  font-size: clamp(64px, 15vw, 210px);
   line-height: 0.88;
   /* Identical fixed-attachment background on all three lines means each
      shows the slice of the truck photo that's actually behind it at that
      point in the viewport — the letters read as one continuous window onto
-     the photo, not three separate crops. `cover` (rather than a literal
-     100vw/100vh stretch) keeps the photo's own proportions on any screen —
-     stretching it to fit a narrow, tall phone viewport exactly squashed it
-     into unrecognizable color blocks. */
+     the photo, not three separate crops. Sized/positioned to land on the
+     truck itself (not the plain wall to its left) so the letters read as
+     one recognizable photo, not a patterned mosaic of disconnected colors. */
   background-attachment: fixed;
-  background-size: cover;
-  background-position: center;
+  background-size: 115vmax;
+  background-position: 86% 46%;
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;

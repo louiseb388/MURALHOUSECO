@@ -144,6 +144,9 @@ textarea.input { min-height: 90px; resize: vertical; font-family: inherit; }
 
 /* — navigation — */
 .nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
   background: var(--color-text);
   color: var(--color-bg);
 }
@@ -152,10 +155,10 @@ textarea.input { min-height: 90px; resize: vertical; font-family: inherit; }
   flex-wrap: wrap; row-gap: 8px;
   padding-block: var(--space-3);
 }
-/* Shared wordmark treatment: extra-bold Helvetica caps. Used at nav scale by
-   .logo, and at hero scale by Landing's intro mask (see Landing.css). */
+/* Shared wordmark treatment: extra-bold caps. Used at nav scale by .logo,
+   and at hero scale by Landing's intro mask (see Landing.css). */
 .wordmark {
-  font-family: var(--font-wordmark);
+  font-family: var(--font-sans);
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.01em;

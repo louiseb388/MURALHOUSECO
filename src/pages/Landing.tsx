@@ -17,6 +17,16 @@ const HOW_IT_WORKS_ICONS = [MapPinIcon, CalendarCheckIcon, PencilIcon, PaintRoll
 // height in Landing.css, which must stay at HERO_STEPS * 100vh.
 const HERO_STEPS = banners.length + 1;
 
+// How much of each step's scroll range is spent crossfading into the next
+// banner (the rest is a plateau at full opacity, comfortable for reading).
+const CROSSFADE_WIDTH = 0.35;
+// How close to a step boundary (in banner-index units) the headline dips
+// out/in when it swaps — a quick cross-dissolve synced to the swap itself,
+// not a lingering overlap of two headlines.
+const TEXT_FADE_WIDTH = 0.12;
+
+const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
+
 export function Landing() {
   useDocumentTitle('Mural House: hand-painted wall murals');
 
@@ -62,7 +72,22 @@ export function Landing() {
 
   const heroStep = Math.min(HERO_STEPS - 1, Math.floor(heroProgress));
   const maskProgress = Math.min(1, heroProgress);
-  const activeBanner = heroStep >= 1 ? banners[heroStep - 1] : null;
+
+  // Continuous position in banner-index space (0 = truck .. banners.length-1
+  // = motorbike), driving a scroll-scrubbed crossfade instead of a jump cut.
+  const bannerPos = Math.max(0, heroProgress - 1);
+  const bannerOpacity = (i: number) =>
+    i === 0 ? 1 : clamp01((bannerPos - (i - CROSSFADE_WIDTH)) / CROSSFADE_WIDTH);
+
+  // Headline swaps at the midpoint of the image crossfade window (not the
+  // midpoint of the whole step — that window only occupies the last
+  // CROSSFADE_WIDTH of each step), with a brief dip so it never overlaps
+  // illegibly with the outgoing headline.
+  const shiftedPos = bannerPos + CROSSFADE_WIDTH / 2;
+  const textStep = Math.min(banners.length, Math.floor(shiftedPos) + 1);
+  const activeBanner = textStep >= 1 ? banners[textStep - 1] : null;
+  const distFromTextSwap = Math.abs(shiftedPos - Math.round(shiftedPos));
+  const textOpacity = heroStep === 0 ? 0 : clamp01(distFromTextSwap / TEXT_FADE_WIDTH);
 
   const nextTestimonial = () => setTestimonialIndex((i) => (i + 1) % testimonials.length);
   const prevTestimonial = () => setTestimonialIndex((i) => (i - 1 + testimonials.length) % testimonials.length);
@@ -75,14 +100,15 @@ export function Landing() {
 
       <div ref={heroScrollRef} className="hero-scroll">
         <div className="hero">
-          {banners.map((banner) => (
+          {banners.map((banner, i) => (
             <img
               key={banner.id}
               src={banner.src}
               alt=""
               className="hero__slide"
               style={{
-                display: activeBanner === banner ? 'block' : 'none',
+                opacity: bannerOpacity(i),
+                zIndex: i + 1,
                 objectPosition: banner.objectPosition,
                 transform: `scale(${banner.scale})`,
                 transformOrigin: banner.transformOrigin,
@@ -93,13 +119,13 @@ export function Landing() {
           <div className="hero__scrim" />
 
           {activeBanner && (
-            <div className="hero__content">
+            <div className="hero__content" style={{ opacity: textOpacity }}>
               <h1 className="hero__step-heading">
                 <span>{activeBanner.headline.line1}</span>
                 <span>{activeBanner.headline.line2}</span>
               </h1>
               <button type="button" className="btn btn-primary btn-cta" onClick={() => setWizardOpen(true)}>
-                Get instant quote
+                Get started
               </button>
             </div>
           )}
@@ -188,7 +214,7 @@ export function Landing() {
             style={{ color: 'var(--color-bg)', borderColor: 'var(--color-bg)' }}
             onClick={() => setWizardOpen(true)}
           >
-            Get instant quote
+            Get started
           </button>
         </div>
       </section>

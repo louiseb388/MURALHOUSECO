@@ -11,12 +11,10 @@
   --color-accent-100: #e6f1f6;
   --color-accent-800: #07445f;
 
-  --font-heading: 'Archivo', system-ui, sans-serif;
+  --font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-heading: var(--font-sans);
   --font-heading-weight: 800;
-  --font-body: 'Archivo', system-ui, sans-serif;
-  /* Wordmark only — nav logo and hero intro mask. Kept distinct from Archivo
-     (the type used for everything else) as a deliberate brand accent. */
-  --font-wordmark: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-body: var(--font-sans);
 
   --space-1: 4px;
   --space-2: 8px;
