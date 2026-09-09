@@ -27,8 +27,30 @@
   transition: opacity 400ms ease;
   /* A slight, consistent grade across all three photos (a cartoon
      illustration and two real-photo rooms) so they read as one considered
-     art direction rather than three mismatched source assets. */
+     art direction rather than three mismatched source assets. Also doubles
+     as the wrapper for the two-layer blurBackground banners (see below) —
+     applied once here to the whole composited pair rather than to each
+     layer separately. */
   filter: saturate(0.88) contrast(1.05);
+}
+/* Depth-of-field treatment for banners with blurBackground: true (see
+   content.ts) — a blurred copy of the photo behind a sharp copy that's
+   radially masked to a soft-edged circle in the middle, so the center
+   reads sharp while the surrounding wall falls out of focus. */
+.hero__slide-bg,
+.hero__slide-fg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.hero__slide-bg {
+  filter: blur(16px);
+}
+.hero__slide-fg {
+  mask-image: radial-gradient(ellipse 42% 42% at center, black 55%, transparent 92%);
+  -webkit-mask-image: radial-gradient(ellipse 42% 42% at center, black 55%, transparent 92%);
 }
 .hero__scrim {
   position: absolute;
@@ -78,6 +100,33 @@
   opacity: 0.9;
   text-align: center;
 }
+.hero__controls {
+  position: absolute;
+  z-index: 6;
+  left: 0;
+  right: 0;
+  bottom: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+.hero__control-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: rgba(20, 18, 17, 0.35);
+  color: var(--color-bg);
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease, transform 100ms ease;
+}
+.hero__control-btn:hover { background: rgba(20, 18, 17, 0.55); border-color: rgba(255, 255, 255, 0.8); }
+.hero__control-btn:active { transform: scale(0.92); }
 .hero__progress {
   position: absolute;
   z-index: 6;
@@ -92,28 +141,30 @@
   transition: background-color 250ms ease;
 }
 
-/* — "How it works": icon-led steps in a horizontal line (Landing only;
-   Process's near-identical section keeps the numbered .step-row style) — */
+/* — "How it works": big numeral steps in a horizontal line, centered
+   (Landing only; Process's near-identical section keeps the left-aligned
+   .step-row style). No border-bottom here — the <hr> right after this
+   section already provides one; a border on both would double up. */
 .how-it-works {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 32px;
   padding: 32px 0;
   border-top: 2px solid var(--color-divider);
-  border-bottom: 2px solid var(--color-divider);
 }
-.how-it-works__icon {
-  width: 56px;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid var(--color-divider);
+.how-it-works__item {
+  text-align: center;
+}
+.how-it-works__num {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 48px;
+  line-height: 1;
+  margin: 0 0 12px;
   color: var(--color-accent);
-  margin-bottom: 16px;
 }
 .how-it-works__item h3 { font-size: 20px; margin: 0 0 8px; }
-.how-it-works__item p { font-size: 14.5px; line-height: 1.6; margin: 0; max-width: 32ch; opacity: 0.85; }
+.how-it-works__item p { font-size: 14.5px; line-height: 1.6; margin: 0 auto; max-width: 32ch; opacity: 0.85; }
 @media (max-width: 900px) {
   .how-it-works { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }

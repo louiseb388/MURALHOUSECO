@@ -10,6 +10,9 @@ export type Banner = {
   scale: number;
   transformOrigin: string;
   headline: string;
+  /** Renders the photo with its background blurred behind a sharp center,
+   *  for a depth-of-field look, instead of one flat sharp image. */
+  blurBackground?: boolean;
 };
 
 export const banners: Banner[] = [
@@ -39,6 +42,7 @@ export const banners: Banner[] = [
     scale: 1.2,
     transformOrigin: 'center',
     headline: 'Man cave.',
+    blurBackground: true,
   },
 ];
 
@@ -64,11 +68,6 @@ export const testimonials: Testimonial[] = [
     quote:
       '“Booked in about a month ahead, which was exactly what we were told to expect. Two days of painting and our daughter’s woodland mural was done.”',
     name: 'Alex R., parent',
-  },
-  {
-    quote:
-      '“Not just for kids’ rooms — we had a large map mural painted in our home office and it’s become the thing everyone asks about on video calls.”',
-    name: 'Dan S., home office mural',
   },
 ];
 
@@ -148,5 +147,6 @@ export const faqItems: FaqItem[] = [
   },
 ];
 
-export const CONTACT_EMAIL = 'hello@studiomural.co.uk';
+export const CONTACT_EMAIL = 'hello@muralhouse.com';
+export const CONTACT_PHONE = '07809297199';
 export const PRICE_PER_SQM = 120;

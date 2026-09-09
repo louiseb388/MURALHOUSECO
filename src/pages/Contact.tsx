@@ -1,21 +1,20 @@
 import { useState, type FormEvent } from 'react';
-import { Link } from 'react-router-dom';
 import { NavBar } from '../components/NavBar';
 import { Footer } from '../components/Footer';
-import { CONTACT_EMAIL } from '../data/content';
+import { CONTACT_EMAIL, CONTACT_PHONE } from '../data/content';
 import { useSEO } from '../hooks/useSEO';
 
 export function Contact() {
   useSEO({
     title: 'Contact Us | Mural House Co.',
-    description:
-      "Get in touch with Mural House Co. for a free site visit or instant quote, or email hello@studiomural.co.uk. Covering Surrey & West Sussex.",
+    description: 'Get in touch with Mural House Co. by phone, email, or our contact form. Covering Surrey & West Sussex.',
     path: '/contact',
   });
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  const [images, setImages] = useState<File[]>([]);
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (e: FormEvent) => {
@@ -32,10 +31,7 @@ export function Contact() {
       <div className="container">
         <section className="page-header">
           <h1>Get in touch</h1>
-          <p>
-            Already know roughly what you want? Use the <Link to="/?quote=1">instant quote</Link> tool instead. For
-            anything else, send us a message.
-          </p>
+          <p>We usually reply within 2 business days.</p>
         </section>
 
         <hr className="hr" />
@@ -76,6 +72,22 @@ export function Contact() {
                   required
                 />
               </div>
+              <div className="field">
+                <label htmlFor="c-images">Attach images (optional)</label>
+                <input
+                  className="input"
+                  id="c-images"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(e) => setImages(Array.from(e.target.files ?? []))}
+                />
+                {images.length > 0 && (
+                  <p style={{ fontSize: 13, margin: '6px 0 0', opacity: 0.7 }}>
+                    {images.length} {images.length === 1 ? 'image' : 'images'} attached
+                  </p>
+                )}
+              </div>
               <button type="submit" className="btn btn-primary btn-block">
                 Send message
               </button>
@@ -83,12 +95,12 @@ export function Contact() {
           )}
 
           <div>
-            <h2 style={{ fontSize: 26, margin: '0 0 12px' }}>Prefer email?</h2>
-            <p style={{ fontSize: 15.5, lineHeight: 1.6, opacity: 0.85, margin: '0 0 20px', maxWidth: '48ch' }}>
-              Write to us directly and we'll get back to you within 2 business days.
+            <h2 style={{ fontSize: 26, margin: '0 0 16px' }}>Contact details</h2>
+            <p style={{ fontSize: 15.5, margin: '0 0 8px' }}>
+              <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
             </p>
             <p style={{ fontSize: 15.5, margin: 0 }}>
-              <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+              <a href={`tel:${CONTACT_PHONE}`}>{CONTACT_PHONE}</a>
             </p>
           </div>
         </section>

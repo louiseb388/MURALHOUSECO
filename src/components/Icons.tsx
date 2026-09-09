@@ -64,42 +64,19 @@ export function PlusIcon(props: IconProps) {
   );
 }
 
-export function MapPinIcon(props: IconProps) {
+export function PauseIcon(props: IconProps) {
   return (
-    <Icon {...props}>
-      <path d="M12 21c4-4.5 7-8.2 7-11a7 7 0 0 0-14 0c0 2.8 3 6.5 7 11z" />
-      <circle cx="12" cy="10" r="3" />
+    <Icon {...props} fill="currentColor" stroke="none">
+      <rect x="6" y="4" width="4" height="16" />
+      <rect x="14" y="4" width="4" height="16" />
     </Icon>
   );
 }
 
-export function CalendarCheckIcon(props: IconProps) {
+export function PlayIcon(props: IconProps) {
   return (
-    <Icon {...props}>
-      <rect x="3" y="5" width="18" height="16" />
-      <path d="M3 10h18" />
-      <path d="M8 3v4" />
-      <path d="M16 3v4" />
-      <path d="m8.5 14 2 2 4.5-4.5" />
-    </Icon>
-  );
-}
-
-export function PencilIcon(props: IconProps) {
-  return (
-    <Icon {...props}>
-      <path d="M4 20l1-4L16 5l3 3L8 19l-4 1z" />
-      <path d="M14 7l3 3" />
-    </Icon>
-  );
-}
-
-export function PaintRollerIcon(props: IconProps) {
-  return (
-    <Icon {...props}>
-      <rect x="6" y="4" width="12" height="6" />
-      <path d="M12 10v6" />
-      <rect x="9" y="16" width="6" height="5" />
+    <Icon {...props} fill="currentColor" stroke="none">
+      <path d="M8 5v14l11-7-11-7z" />
     </Icon>
   );
 }
