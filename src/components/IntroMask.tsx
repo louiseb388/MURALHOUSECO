@@ -11,10 +11,15 @@ type IntroMaskProps = {
 
 /**
  * Hero intro mask: "MURAL / HOUSE / CO." set huge, dead center, in the
- * wordmark face, each line background-clipped to the same single hero photo
- * so it shows through the letters only. All three lines share the same
- * fixed-attachment background so the image reads as one continuous photo
- * behind the stack, not three separate crops.
+ * wordmark face, background-clipped to a single hero photo so it shows
+ * through the letters only. All three lines live in one element (line
+ * breaks, not three separate ones) so the background is sized and
+ * positioned exactly once — it reads as one continuous photo behind the
+ * whole stack. (An earlier version gave each line its own background and
+ * relied on background-attachment: fixed to fake this via the viewport,
+ * but plenty of browsers — mobile Safari included — silently ignore fixed
+ * attachment, so each line fell back to independently cover-cropping the
+ * same photo and looked like three repeats of the same crop.)
  */
 export function IntroMask({ progress, imageSrc }: IntroMaskProps) {
   const maskStyle: CSSProperties = { backgroundImage: `url(${imageSrc})` };
@@ -32,15 +37,13 @@ export function IntroMask({ progress, imageSrc }: IntroMaskProps) {
         aria-hidden="true"
       >
         <div className="intro-mask">
-          <span className="intro-mask__line wordmark" style={maskStyle}>
+          <div className="intro-mask__text wordmark" style={maskStyle}>
             Mural
-          </span>
-          <span className="intro-mask__line wordmark" style={maskStyle}>
+            <br />
             House
-          </span>
-          <span className="intro-mask__line wordmark" style={maskStyle}>
+            <br />
             Co.
-          </span>
+          </div>
         </div>
       </div>
       <div className="intro-mask__hint" style={{ opacity: 1 - progress }} aria-hidden="true">

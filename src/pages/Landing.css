@@ -186,17 +186,22 @@
   width: min(1300px, 92vw);
   text-align: center;
 }
-.intro-mask__line {
+.intro-mask__text {
   display: block;
-  font-size: clamp(64px, 15vw, 210px);
-  line-height: 0.88;
-  /* Identical fixed-attachment background on all three lines means each
-     shows the slice of the truck photo that's actually behind it at that
-     point in the viewport — the letters read as one continuous window onto
-     the photo (not three separate crops), with the plain wall on the left
-     of the source photo showing through as white space behind M/H, and the
-     truck itself carrying through the remaining letters. */
-  background-attachment: fixed;
+  /* 50% bigger than the original 64px/15vw/210px throughout — except the
+     floor, trimmed back from a strict 96px so "MURAL"/"HOUSE" (the widest
+     lines) don't overflow .intro-mask's width on the narrowest phones. */
+  font-size: clamp(80px, 22.5vw, 315px);
+  /* Tightened from 0.88 — at the bigger size the three-line block was tall
+     enough to collide with .intro-mask__hint below it on common desktop
+     viewport heights (1400×900 and up). */
+  line-height: 0.8;
+  /* One element, one background — sized and positioned once against this
+     box's own bounds (which spans all three lines), so it reads as one
+     continuous photo behind the whole stack instead of a separate crop per
+     line. The plain wall on the left of the source photo shows through as
+     white space behind M/H, with the truck itself carrying through the
+     remaining letters. */
   background-size: cover;
   background-position: center;
   background-clip: text;
@@ -204,7 +209,7 @@
   color: transparent;
   -webkit-text-fill-color: transparent;
 }
-/* Fixed (not absolute within .hero) so it always sits 40px above the true
+/* Fixed (not absolute within .hero) so it always sits above the true
    viewport bottom — including on the very first frame, before the user has
    scrolled at all, when the sticky hero hasn't yet caught up to top:0 and
    its own box still extends slightly below the viewport (offset by the nav
@@ -214,7 +219,7 @@
   z-index: 21;
   left: 0;
   right: 0;
-  bottom: 40px;
+  bottom: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
