@@ -148,5 +148,4 @@ export const faqItems: FaqItem[] = [
 ];
 
 export const CONTACT_EMAIL = 'hello@muralhouse.com';
-export const CONTACT_PHONE = '07809297199';
 export const PRICE_PER_SQM = 120;

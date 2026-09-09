@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import ogImage from '../assets/truck-mural-cutout.jpg';
-import { CONTACT_EMAIL, CONTACT_PHONE } from '../data/content';
+import { CONTACT_EMAIL } from '../data/content';
 
 const SCRIPT_ID = 'structured-data-local-business';
 
@@ -24,7 +24,6 @@ export function StructuredData() {
       image: `${origin}${ogImage}`,
       description:
         "Hand-painted wall murals for kids' bedrooms, homes and commercial spaces across Surrey & West Sussex.",
-      telephone: `+44${CONTACT_PHONE.replace(/^0/, '')}`,
       email: CONTACT_EMAIL,
       priceRange: '££',
       areaServed: [

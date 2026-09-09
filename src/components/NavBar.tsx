@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { CONTACT_PHONE } from '../data/content';
 
 type NavBarProps = {
   /** Present on Landing, where the CTA opens the wizard directly. Absent elsewhere,
@@ -14,9 +13,9 @@ export function NavBar({ onQuoteClick }: NavBarProps) {
         <Link to="/" className="logo wordmark">
           Mural House Co.
         </Link>
-        <a href={`tel:${CONTACT_PHONE}`} className="nav__phone">
-          {CONTACT_PHONE}
-        </a>
+        <Link to="/contact" className="nav__link">
+          Contact us
+        </Link>
         {onQuoteClick ? (
           <button type="button" className="btn btn-primary btn-cta" onClick={onQuoteClick}>
             Get started

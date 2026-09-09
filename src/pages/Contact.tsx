@@ -1,13 +1,13 @@
 import { useState, type FormEvent } from 'react';
 import { NavBar } from '../components/NavBar';
 import { Footer } from '../components/Footer';
-import { CONTACT_EMAIL, CONTACT_PHONE } from '../data/content';
+import { CONTACT_EMAIL } from '../data/content';
 import { useSEO } from '../hooks/useSEO';
 
 export function Contact() {
   useSEO({
     title: 'Contact Us | Mural House Co.',
-    description: 'Get in touch with Mural House Co. by phone, email, or our contact form. Covering Surrey & West Sussex.',
+    description: 'Get in touch with Mural House Co. by email or our contact form. Covering Surrey & West Sussex.',
     path: '/contact',
   });
 
@@ -96,11 +96,8 @@ export function Contact() {
 
           <div>
             <h2 style={{ fontSize: 26, margin: '0 0 16px' }}>Contact details</h2>
-            <p style={{ fontSize: 15.5, margin: '0 0 8px' }}>
-              <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
-            </p>
             <p style={{ fontSize: 15.5, margin: 0 }}>
-              <a href={`tel:${CONTACT_PHONE}`}>{CONTACT_PHONE}</a>
+              <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
             </p>
           </div>
         </section>
