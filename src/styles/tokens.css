@@ -1,0 +1,33 @@
+/* Modernist design system — tokens. Source of truth for hex values, spacing, shadows. */
+:root {
+  --color-bg: #f3f2f2;
+  --color-surface: #eae9e9;
+  --color-text: #201e1d;
+  --color-accent: #1583b3;
+  --color-accent-600: #146d95;
+  --color-accent-700: #095d8a;
+  --color-divider: color-mix(in srgb, #201e1d 40%, transparent);
+
+  --color-accent-100: #e6f1f6;
+  --color-accent-800: #07445f;
+
+  --font-heading: 'Archivo', system-ui, sans-serif;
+  --font-heading-weight: 800;
+  --font-body: 'Archivo', system-ui, sans-serif;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+
+  --shadow-lg: 0 12px 32px color-mix(in srgb, #2d2b2b 22%, transparent);
+
+  --container-max: 1200px;
+  --container-pad: clamp(20px, 5vw, 72px);
+}

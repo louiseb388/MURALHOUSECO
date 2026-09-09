@@ -1,0 +1,31 @@
+import { Link } from 'react-router-dom';
+
+type NavBarProps = {
+  /** Present on Landing, where the CTA opens the wizard directly. Absent elsewhere,
+   *  where the CTA links to Landing with ?quote=1 so the wizard auto-opens there. */
+  onQuoteClick?: () => void;
+};
+
+export function NavBar({ onQuoteClick }: NavBarProps) {
+  return (
+    <nav className="nav">
+      <div className="container nav__row">
+        <Link to="/" className="logo">
+          Mural House Co.
+        </Link>
+        <a href="tel:01234567890" className="nav__phone">
+          01234 567 890
+        </a>
+        {onQuoteClick ? (
+          <button type="button" className="btn btn-primary btn-cta" onClick={onQuoteClick}>
+            Get instant quote
+          </button>
+        ) : (
+          <Link to="/?quote=1" className="btn btn-primary btn-cta">
+            Get instant quote
+          </Link>
+        )}
+      </div>
+    </nav>
+  );
+}
