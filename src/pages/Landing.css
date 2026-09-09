@@ -92,6 +92,35 @@
   gap: 12px;
 }
 
+/* — "How it works": icon-led steps in a horizontal line (Landing only;
+   Process's near-identical section keeps the numbered .step-row style) — */
+.how-it-works {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 32px;
+  padding: 32px 0;
+  border-top: 2px solid var(--color-divider);
+  border-bottom: 2px solid var(--color-divider);
+}
+.how-it-works__icon {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--color-divider);
+  color: var(--color-accent);
+  margin-bottom: 16px;
+}
+.how-it-works__item h3 { font-size: 20px; margin: 0 0 8px; }
+.how-it-works__item p { font-size: 14.5px; line-height: 1.6; margin: 0; max-width: 32ch; opacity: 0.85; }
+@media (max-width: 900px) {
+  .how-it-works { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 480px) {
+  .how-it-works { grid-template-columns: minmax(0, 1fr); }
+}
+
 .ticker {
   display: flex;
   justify-content: space-between;

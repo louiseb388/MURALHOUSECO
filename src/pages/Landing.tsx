@@ -4,10 +4,22 @@ import { NavBar } from '../components/NavBar';
 import { Footer } from '../components/Footer';
 import { QuoteWizard } from '../components/QuoteWizard';
 import { IntroMask } from '../components/IntroMask';
-import { ChevronLeftIcon, ChevronRightIcon, PauseIcon, PlayIcon } from '../components/Icons';
+import {
+  CalendarCheckIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  MapPinIcon,
+  PaintRollerIcon,
+  PauseIcon,
+  PencilIcon,
+  PlayIcon,
+} from '../components/Icons';
 import { banners, howItWorks, testimonials } from '../data/content';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import './Landing.css';
+
+// One icon per howItWorks entry, in order (site visit, booked in, design agreed, painted on site).
+const HOW_IT_WORKS_ICONS = [MapPinIcon, CalendarCheckIcon, PencilIcon, PaintRollerIcon];
 
 const CAROUSEL_INTERVAL_MS = 5000;
 const CAROUSEL_TRANSITION_MS = 800;
@@ -204,15 +216,20 @@ export function Landing() {
           <span className="kicker" style={{ marginBottom: 24 }}>
             How it works
           </span>
-          {howItWorks.map((step, i) => (
-            <div className="step-row" key={step.title}>
-              <p className="step-row__num">{String(i + 1).padStart(2, '0')}</p>
-              <div>
-                <h3>{step.title}</h3>
-                <p>{step.body}</p>
-              </div>
-            </div>
-          ))}
+          <div className="how-it-works">
+            {howItWorks.map((step, i) => {
+              const StepIcon = HOW_IT_WORKS_ICONS[i];
+              return (
+                <div className="how-it-works__item" key={step.title}>
+                  <div className="how-it-works__icon">
+                    <StepIcon size={26} />
+                  </div>
+                  <h3>{step.title}</h3>
+                  <p>{step.body}</p>
+                </div>
+              );
+            })}
+          </div>
         </section>
 
         <hr className="hr" />
