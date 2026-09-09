@@ -30,7 +30,11 @@ h5 { font-size: 16px; }
 h6 { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; }
 
 p { margin: 0 0 var(--space-3); }
-a { color: var(--color-accent-700); text-underline-offset: 3px; }
+a {
+  color: var(--color-accent-700);
+  text-underline-offset: 3px;
+  transition: color 150ms ease, opacity 150ms ease;
+}
 a:hover { color: var(--color-accent); }
 img { display: block; max-width: 100%; }
 figure { margin: 0; }
@@ -67,12 +71,15 @@ figcaption {
   background: transparent; border: 1px solid transparent;
   padding: var(--space-2) calc(var(--space-3) * 1.2);
   border-radius: var(--radius-md);
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease,
+    box-shadow 150ms ease, transform 100ms ease;
 }
 .btn svg { display: block; }
 .btn:disabled { opacity: 0.45; cursor: not-allowed; }
-.btn-primary { background: var(--color-accent); color: var(--color-bg); }
-.btn-primary:hover { background: var(--color-accent-600); }
-.btn-primary:active { background: var(--color-accent-700); }
+.btn:not(:disabled):active { transform: scale(0.97); }
+.btn-primary { background: var(--color-accent); color: var(--color-bg); box-shadow: var(--shadow-sm); }
+.btn-primary:hover { background: var(--color-accent-600); box-shadow: var(--shadow-md); }
+.btn-primary:active { background: var(--color-accent-700); box-shadow: var(--shadow-sm); }
 .btn-secondary { border-color: var(--color-divider); }
 .btn-secondary:hover { background: color-mix(in srgb, var(--color-text) 7%, transparent); }
 .btn-secondary:active { background: color-mix(in srgb, var(--color-text) 14%, transparent); }
@@ -86,6 +93,7 @@ figcaption {
 .btn-cta {
   position: relative;
   overflow: hidden;
+  font-weight: 400;
   font-size: 21px;
   padding: 12px 22px;
   flex-shrink: 0;
@@ -117,9 +125,14 @@ figcaption {
   font-size: 14px; color: var(--color-text); caret-color: var(--color-accent);
   background: var(--color-surface);
   border: 1px solid var(--color-divider); border-radius: var(--radius-md);
+  transition: border-color 150ms ease, box-shadow 150ms ease;
 }
 .input:hover { border-color: color-mix(in srgb, var(--color-text) 45%, transparent); }
-.input:focus-visible { border-color: var(--color-accent); outline-offset: 0; }
+.input:focus-visible {
+  border-color: var(--color-accent);
+  outline-offset: 0;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 15%, transparent);
+}
 textarea.input { min-height: 90px; resize: vertical; font-family: inherit; }
 
 /* — dialog — */
@@ -127,12 +140,24 @@ textarea.input { min-height: 90px; resize: vertical; font-family: inherit; }
   position: fixed; inset: 0; z-index: 80; display: grid; place-items: center;
   padding: var(--space-4);
   background: color-mix(in srgb, #2d2b2b 50%, transparent);
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 200ms ease, visibility 0s linear 0s;
+}
+.dialog-backdrop--closed {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 200ms ease, visibility 0s linear 200ms;
 }
 .dialog {
   width: min(440px, 100%); display: flex; flex-direction: column; gap: var(--space-3);
   padding: var(--space-4); border-radius: var(--radius-lg);
   background: var(--color-surface); box-shadow: var(--shadow-lg);
+  transform: scale(1);
+  transition: transform 200ms ease;
 }
+.dialog-backdrop--closed .dialog { transform: scale(0.96); }
 .dialog-title {
   font-family: var(--font-heading); font-weight: var(--font-heading-weight);
   font-size: 20px; margin-top: 8px;
@@ -149,6 +174,7 @@ textarea.input { min-height: 90px; resize: vertical; font-family: inherit; }
   z-index: 50;
   background: var(--color-text);
   color: var(--color-bg);
+  box-shadow: var(--shadow-md);
 }
 .nav__row {
   display: flex; align-items: center; gap: var(--space-4);
@@ -250,7 +276,11 @@ textarea.input { min-height: 90px; resize: vertical; font-family: inherit; }
   font-weight: 800;
   font-size: 18px;
   list-style: none;
+  transition: color 150ms ease;
 }
+.faq-item summary:hover { color: var(--color-accent-700); }
+.faq-item summary svg { transition: transform 200ms ease; }
+.faq-item[open] summary svg { transform: rotate(45deg); }
 .faq-item summary::-webkit-details-marker { display: none; }
 .faq-item summary svg { flex: none; }
 .faq-item p { font-size: 15.5px; line-height: 1.6; opacity: 0.85; margin: 16px 0 0; max-width: 64ch; }

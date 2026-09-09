@@ -30,8 +30,6 @@ export function QuoteWizard({ open, onClose }: QuoteWizardProps) {
     if (open) setStep(1);
   }
 
-  if (!open) return null;
-
   const width = parseFloat(widthM) || 0;
   const height = parseFloat(heightM) || 0;
   const sqm = width * height;
@@ -43,7 +41,11 @@ export function QuoteWizard({ open, onClose }: QuoteWizardProps) {
   const stepNum = Math.min(step, 2);
 
   return (
-    <div className="dialog-backdrop" onClick={onClose}>
+    <div
+      className={`dialog-backdrop${open ? '' : ' dialog-backdrop--closed'}`}
+      onClick={onClose}
+      aria-hidden={!open}
+    >
       <div
         className="dialog"
         style={{ width: 'min(560px, 100%)', maxHeight: '88vh', overflow: 'auto' }}

@@ -4,11 +4,29 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--
+      This baseline title/description/OG data is a fallback for the instant
+      before React mounts, and for any crawler that doesn't execute JS.
+      Every route overrides all of it (title, description, canonical, OG,
+      Twitter Card — see src/hooks/useSEO.ts) once it mounts, since this is
+      a client-rendered SPA with one static HTML shell for all 4 pages.
+    -->
     <meta
       name="description"
-      content="Hand-painted wall murals for kids' bedrooms, homes and businesses. Covering Surrey & West Sussex. Get an instant quote in under a minute."
+      content="Hand-painted wall murals for kids' bedrooms, homes and commercial spaces across Surrey & West Sussex. Get an instant, no-obligation quote in under a minute."
     />
-    <title>Mural House: hand-painted wall murals</title>
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Mural House Co." />
+    <meta property="og:title" content="Hand-Painted Wall Murals in Surrey & West Sussex | Mural House Co." />
+    <meta
+      property="og:description"
+      content="Hand-painted wall murals for kids' bedrooms, homes and commercial spaces across Surrey & West Sussex. Get an instant, no-obligation quote in under a minute."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+    <title>Hand-Painted Wall Murals in Surrey & West Sussex | Mural House Co.</title>
   </head>
   <body>
     <div id="root"></div>

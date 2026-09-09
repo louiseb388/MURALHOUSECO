@@ -24,6 +24,10 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* A slight, consistent grade across all three photos (a cartoon
+     illustration and two real-photo rooms) so they read as one considered
+     art direction rather than three mismatched source assets. */
+  filter: saturate(0.88) contrast(1.05);
 }
 .hero__scrim {
   position: absolute;
@@ -52,7 +56,6 @@
   margin: 0;
   color: var(--color-bg);
 }
-.hero__step-heading span { display: block; }
 .hero__sub {
   position: absolute;
   z-index: 6;
@@ -78,6 +81,7 @@
 .hero__progress-seg {
   flex: 1;
   height: 3px;
+  transition: background-color 250ms ease;
 }
 
 /* — "How it works": icon-led steps in a horizontal line (Landing only;
@@ -142,11 +146,15 @@
 }
 .testimonial-controls { display: flex; align-items: center; gap: 16px; margin-top: 28px; }
 .testimonial-dots { display: flex; gap: 8px; }
-.testimonial-dot { width: 8px; height: 8px; padding: 0; border: none; cursor: pointer; }
+.testimonial-dot {
+  width: 8px; height: 8px; padding: 0; border: none; cursor: pointer;
+  transition: background-color 200ms ease, transform 150ms ease;
+}
+.testimonial-dot:hover { transform: scale(1.4); }
 
 .cta-band { background: var(--color-accent); color: var(--color-bg); }
 .cta-band__inner { max-width: var(--container-max); margin: 0 auto; padding: 56px var(--container-pad); }
-.cta-band h3 {
+.cta-band h2 {
   font-size: clamp(30px, 4vw, 48px);
   line-height: 1.1;
   letter-spacing: -0.015em;
@@ -177,12 +185,12 @@
   /* Identical fixed-attachment background on all three lines means each
      shows the slice of the truck photo that's actually behind it at that
      point in the viewport — the letters read as one continuous window onto
-     the photo, not three separate crops. Sized/positioned to land on the
-     truck itself (not the plain wall to its left) so the letters read as
-     one recognizable photo, not a patterned mosaic of disconnected colors. */
+     the photo (not three separate crops), with the plain wall on the left
+     of the source photo showing through as white space behind M/H, and the
+     truck itself carrying through the remaining letters. */
   background-attachment: fixed;
-  background-size: 115vmax;
-  background-position: 86% 46%;
+  background-size: cover;
+  background-position: center;
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;

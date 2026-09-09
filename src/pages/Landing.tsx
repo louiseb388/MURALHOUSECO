@@ -6,7 +6,7 @@ import { QuoteWizard } from '../components/QuoteWizard';
 import { IntroMask } from '../components/IntroMask';
 import { CalendarCheckIcon, ChevronLeftIcon, ChevronRightIcon, MapPinIcon, PaintRollerIcon, PencilIcon } from '../components/Icons';
 import { banners, howItWorks, testimonials } from '../data/content';
-import { useDocumentTitle } from '../hooks/useDocumentTitle';
+import { useSEO } from '../hooks/useSEO';
 import './Landing.css';
 
 // One icon per howItWorks entry, in order (site visit, booked in, design agreed, painted on site).
@@ -28,7 +28,12 @@ const TEXT_FADE_WIDTH = 0.12;
 const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
 
 export function Landing() {
-  useDocumentTitle('Mural House: hand-painted wall murals');
+  useSEO({
+    title: 'Hand-Painted Wall Murals in Surrey & West Sussex | Mural House Co.',
+    description:
+      "Hand-painted wall murals for kids' bedrooms, homes and commercial spaces across Surrey & West Sussex. Get an instant, no-obligation quote in under a minute.",
+    path: '/',
+  });
 
   const [searchParams] = useSearchParams();
   const [wizardOpen, setWizardOpen] = useState(false);
@@ -104,8 +109,13 @@ export function Landing() {
             <img
               key={banner.id}
               src={banner.src}
-              alt=""
+              alt={banner.alt}
               className="hero__slide"
+              // The truck (i === 0) is the LCP candidate — it's what paints
+              // first, before any scroll. The other two are already needed
+              // early in the scroll sequence, so still eager, just not
+              // fetch-prioritized over the first paint.
+              fetchPriority={i === 0 ? 'high' : 'auto'}
               style={{
                 opacity: bannerOpacity(i),
                 zIndex: i + 1,
@@ -120,10 +130,7 @@ export function Landing() {
 
           {activeBanner && (
             <div className="hero__content" style={{ opacity: textOpacity }}>
-              <h1 className="hero__step-heading">
-                <span>{activeBanner.headline.line1}</span>
-                <span>{activeBanner.headline.line2}</span>
-              </h1>
+              <h1 className="hero__step-heading">{activeBanner.headline}</h1>
               <button type="button" className="btn btn-primary btn-cta" onClick={() => setWizardOpen(true)}>
                 Get started
               </button>
@@ -155,9 +162,9 @@ export function Landing() {
         <hr className="hr" />
 
         <section id="how" style={{ padding: '48px 0 32px' }}>
-          <span className="kicker" style={{ marginBottom: 24 }}>
+          <h2 className="kicker" style={{ marginBottom: 24 }}>
             How it works
-          </span>
+          </h2>
           <div className="how-it-works">
             {howItWorks.map((step, i) => {
               const StepIcon = HOW_IT_WORKS_ICONS[i];
@@ -177,9 +184,9 @@ export function Landing() {
         <hr className="hr" />
 
         <section style={{ padding: '48px 0' }}>
-          <span className="kicker" style={{ marginBottom: 20 }}>
+          <h2 className="kicker" style={{ marginBottom: 20 }}>
             What clients say
-          </span>
+          </h2>
           <blockquote className="testimonial-quote">{activeTestimonial.quote}</blockquote>
           <p className="testimonial-caption">{activeTestimonial.name}</p>
           <div className="testimonial-controls">
@@ -207,7 +214,7 @@ export function Landing() {
 
       <section className="cta-band">
         <div className="cta-band__inner">
-          <h3>Want to get started?</h3>
+          <h2>Want to get started?</h2>
           <button
             type="button"
             className="btn btn-ghost btn-cta"

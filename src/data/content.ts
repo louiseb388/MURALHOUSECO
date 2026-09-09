@@ -5,36 +5,40 @@ import motorcycleMuralExtended from '../assets/motorcycle-mural-extended.png';
 export type Banner = {
   id: string;
   src: string;
+  alt: string;
   objectPosition: string;
   scale: number;
   transformOrigin: string;
-  headline: { line1: string; line2: string };
+  headline: string;
 };
 
 export const banners: Banner[] = [
   {
     id: 'hero-banner-1',
     src: truckMuralCutout,
+    alt: "Hand-painted monster truck wall mural in a child's bedroom",
     objectPosition: 'top right',
     scale: 1.183,
     transformOrigin: 'top right',
-    headline: { line1: 'Wall murals,', line2: 'kids rooms.' },
+    headline: 'Kids rooms.',
   },
   {
     id: 'hero-banner-2',
     src: helmetMuralSpot,
+    alt: 'Hand-painted motorcycle helmet mural on a bedroom wall',
     objectPosition: 'center',
     scale: 1.183,
     transformOrigin: 'top left',
-    headline: { line1: 'Wall murals,', line2: 'commercial.' },
+    headline: 'Commercial.',
   },
   {
     id: 'hero-banner-3',
     src: motorcycleMuralExtended,
+    alt: 'Hand-painted motorcycle mural extending across a wall',
     objectPosition: 'left bottom',
     scale: 3.6,
     transformOrigin: 'top left',
-    headline: { line1: 'Wall murals,', line2: 'man cave.' },
+    headline: 'Man cave.',
   },
 ];
 

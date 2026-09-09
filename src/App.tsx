@@ -1,4 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { ScrollToTop } from './components/ScrollToTop';
+import { StructuredData } from './components/StructuredData';
 import { Landing } from './pages/Landing';
 import { Process } from './pages/Process';
 import { FAQ } from './pages/FAQ';
@@ -7,6 +9,8 @@ import { Contact } from './pages/Contact';
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
+      <StructuredData />
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/process" element={<Process />} />

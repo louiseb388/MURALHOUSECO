@@ -3,10 +3,15 @@ import { Link } from 'react-router-dom';
 import { NavBar } from '../components/NavBar';
 import { Footer } from '../components/Footer';
 import { CONTACT_EMAIL } from '../data/content';
-import { useDocumentTitle } from '../hooks/useDocumentTitle';
+import { useSEO } from '../hooks/useSEO';
 
 export function Contact() {
-  useDocumentTitle('Contact: Mural House');
+  useSEO({
+    title: 'Contact Us | Mural House Co.',
+    description:
+      "Get in touch with Mural House Co. for a free site visit or instant quote, or email hello@studiomural.co.uk. Covering Surrey & West Sussex.",
+    path: '/contact',
+  });
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');

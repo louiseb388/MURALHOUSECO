@@ -2,10 +2,15 @@ import { Link } from 'react-router-dom';
 import { NavBar } from '../components/NavBar';
 import { Footer } from '../components/Footer';
 import { processSteps } from '../data/content';
-import { useDocumentTitle } from '../hooks/useDocumentTitle';
+import { useSEO } from '../hooks/useSEO';
 
 export function Process() {
-  useDocumentTitle('Process: Mural House');
+  useSEO({
+    title: 'How a Mural Gets Painted: Our Process | Mural House Co.',
+    description:
+      'From site visit to the final brushstroke: how Mural House plans, prices and paints every mural, with low-VOC paint and a 50% deposit on booking.',
+    path: '/process',
+  });
 
   return (
     <>
@@ -20,9 +25,9 @@ export function Process() {
         <hr className="hr" />
 
         <section style={{ padding: '48px 0 32px' }}>
-          <span className="kicker" style={{ marginBottom: 24 }}>
+          <h2 className="kicker" style={{ marginBottom: 24 }}>
             The process
-          </span>
+          </h2>
           {processSteps.map((step, i) => (
             <div className="step-row" key={step.title}>
               <p className="step-row__num">{String(i + 1).padStart(2, '0')}</p>
