@@ -12,20 +12,10 @@ import './Landing.css';
 // One icon per howItWorks entry, in order (site visit, booked in, design agreed, painted on site).
 const HOW_IT_WORKS_ICONS = [MapPinIcon, CalendarCheckIcon, PencilIcon, PaintRollerIcon];
 
-// Hero steps: 0 = masked wordmark intro, 1..banners.length = one per banner
-// photo. Each step owns one viewport-height of scroll — see .hero-scroll's
-// height in Landing.css, which must stay at HERO_STEPS * 100vh.
-const HERO_STEPS = banners.length + 1;
-
-// How much of each step's scroll range is spent crossfading into the next
-// banner (the rest is a plateau at full opacity, comfortable for reading).
-const CROSSFADE_WIDTH = 0.35;
-// How close to a step boundary (in banner-index units) the headline dips
-// out/in when it swaps — a quick cross-dissolve synced to the swap itself,
-// not a lingering overlap of two headlines.
-const TEXT_FADE_WIDTH = 0.12;
-
-const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
+// How long each hero photo (and its matching headline) stays on screen
+// before the carousel flicks to the next one. Runs on its own clock from
+// mount, independent of scroll, and loops forever.
+const CAROUSEL_INTERVAL_MS = 1000;
 
 export function Landing() {
   useSEO({
@@ -38,7 +28,8 @@ export function Landing() {
   const [searchParams] = useSearchParams();
   const [wizardOpen, setWizardOpen] = useState(false);
   const [testimonialIndex, setTestimonialIndex] = useState(0);
-  const [heroProgress, setHeroProgress] = useState(0); // continuous, 0..HERO_STEPS
+  const [activeIndex, setActiveIndex] = useState(0); // which banner the carousel is currently showing
+  const [maskProgress, setMaskProgress] = useState(0); // 0 = mask fully covers hero, 1 = fully lifted off
   const heroScrollRef = useRef<HTMLDivElement>(null);
 
   // Read on mount only, matching the design's "?quote=1 auto-opens the wizard" behavior.
@@ -47,10 +38,19 @@ export function Landing() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Drives the whole hero sequence: how far the user has scrolled through
-  // the tall .hero-scroll wrapper, expressed as a continuous value from 0
-  // (top, mask fully down) to HERO_STEPS (past the last banner). The mask
-  // scrubs 1:1 with this within step 0; steps 1+ just read off the floor.
+  // The photo/headline carousel: advances on its own clock, not tied to
+  // scroll, so it's already cycling behind the mask before the user does
+  // anything, and keeps looping once revealed.
+  useEffect(() => {
+    const id = setInterval(() => {
+      setActiveIndex((i) => (i + 1) % banners.length);
+    }, CAROUSEL_INTERVAL_MS);
+    return () => clearInterval(id);
+  }, []);
+
+  // Scroll only ever does one thing here: lift the mask off the hero, from
+  // 0 (fully down) to 1 (fully off). See .hero-scroll's height in
+  // Landing.css, which owns the 100vh of scroll room this expects.
   useEffect(() => {
     const wrapper = heroScrollRef.current;
     if (!wrapper) return;
@@ -59,7 +59,7 @@ export function Landing() {
       const rect = wrapper.getBoundingClientRect();
       const total = rect.height - window.innerHeight;
       const scrolled = Math.min(Math.max(-rect.top, 0), Math.max(total, 0));
-      setHeroProgress(total > 0 ? (scrolled / total) * HERO_STEPS : 0);
+      setMaskProgress(total > 0 ? scrolled / total : 0);
     };
     const onScroll = () => {
       cancelAnimationFrame(raf);
@@ -75,24 +75,7 @@ export function Landing() {
     };
   }, []);
 
-  const heroStep = Math.min(HERO_STEPS - 1, Math.floor(heroProgress));
-  const maskProgress = Math.min(1, heroProgress);
-
-  // Continuous position in banner-index space (0 = truck .. banners.length-1
-  // = motorbike), driving a scroll-scrubbed crossfade instead of a jump cut.
-  const bannerPos = Math.max(0, heroProgress - 1);
-  const bannerOpacity = (i: number) =>
-    i === 0 ? 1 : clamp01((bannerPos - (i - CROSSFADE_WIDTH)) / CROSSFADE_WIDTH);
-
-  // Headline swaps at the midpoint of the image crossfade window (not the
-  // midpoint of the whole step — that window only occupies the last
-  // CROSSFADE_WIDTH of each step), with a brief dip so it never overlaps
-  // illegibly with the outgoing headline.
-  const shiftedPos = bannerPos + CROSSFADE_WIDTH / 2;
-  const textStep = Math.min(banners.length, Math.floor(shiftedPos) + 1);
-  const activeBanner = textStep >= 1 ? banners[textStep - 1] : null;
-  const distFromTextSwap = Math.abs(shiftedPos - Math.round(shiftedPos));
-  const textOpacity = heroStep === 0 ? 0 : clamp01(distFromTextSwap / TEXT_FADE_WIDTH);
+  const activeBanner = banners[activeIndex];
 
   const nextTestimonial = () => setTestimonialIndex((i) => (i + 1) % testimonials.length);
   const prevTestimonial = () => setTestimonialIndex((i) => (i - 1 + testimonials.length) % testimonials.length);
@@ -110,15 +93,14 @@ export function Landing() {
               key={banner.id}
               src={banner.src}
               alt={banner.alt}
+              aria-hidden={i !== activeIndex}
               className="hero__slide"
               // The truck (i === 0) is the LCP candidate — it's what paints
-              // first, before any scroll. The other two are already needed
-              // early in the scroll sequence, so still eager, just not
-              // fetch-prioritized over the first paint.
+              // first, before any scroll or carousel movement.
               fetchPriority={i === 0 ? 'high' : 'auto'}
               style={{
-                opacity: bannerOpacity(i),
-                zIndex: i + 1,
+                opacity: i === activeIndex ? 1 : 0,
+                zIndex: i === activeIndex ? 2 : 1,
                 objectPosition: banner.objectPosition,
                 transform: `scale(${banner.scale})`,
                 transformOrigin: banner.transformOrigin,
@@ -128,28 +110,32 @@ export function Landing() {
 
           <div className="hero__scrim" />
 
-          {activeBanner && (
-            <div className="hero__content" style={{ opacity: textOpacity }}>
-              <h1 className="hero__step-heading">{activeBanner.headline}</h1>
-              <button type="button" className="btn btn-primary btn-cta" onClick={() => setWizardOpen(true)}>
-                Get started
-              </button>
-            </div>
-          )}
+          <div className="hero__content">
+            {/* Keyed on the active banner so each swap remounts the heading,
+                retriggering its fade-in animation — see @keyframes
+                heroHeadlineIn in Landing.css. Only one h1 ever exists at a
+                time, so the page keeps a single, unambiguous h1. */}
+            <h1 key={activeBanner.id} className="hero__step-heading">
+              {activeBanner.headline}
+            </h1>
+            <button type="button" className="btn btn-primary btn-cta" onClick={() => setWizardOpen(true)}>
+              Get started
+            </button>
+          </div>
 
           <p className="hero__sub">Residential and commercial sites. Covering Surrey &amp; West Sussex.</p>
 
           <div className="hero__progress">
-            {Array.from({ length: HERO_STEPS }, (_, i) => (
+            {banners.map((banner, i) => (
               <div
-                key={i}
+                key={banner.id}
                 className="hero__progress-seg"
-                style={{ background: i === heroStep ? 'var(--color-bg)' : 'rgba(255,255,255,0.4)' }}
+                style={{ background: i === activeIndex ? 'var(--color-bg)' : 'rgba(255,255,255,0.4)' }}
               />
             ))}
           </div>
 
-          {heroStep === 0 && <IntroMask progress={maskProgress} imageSrc={banners[0].src} />}
+          <IntroMask progress={maskProgress} imageSrc={activeBanner.src} />
         </div>
       </div>
 

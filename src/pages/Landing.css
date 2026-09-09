@@ -1,16 +1,16 @@
-/* The hero is pinned (sticky) for the height of .hero-scroll, which owns
-   HERO_STEPS viewport-heights of scroll (see HERO_STEPS in Landing.tsx —
-   the two must stay in sync). Scroll position within that range drives
-   which step is showing; scrolling past it releases the pin and carries on
-   down the page normally. */
+/* The hero is pinned (sticky) for the height of .hero-scroll: 100vh to fill
+   the viewport, plus 100vh of scroll room to lift the mask off (see
+   maskProgress in Landing.tsx — the two must stay in sync). That's the only
+   thing scroll drives here; the photo/headline carousel underneath runs on
+   its own timer regardless of scroll position. */
 .hero-scroll {
   position: relative;
-  height: 400vh; /* HERO_STEPS (4) * 100vh */
+  height: 200vh;
 }
-/* Hero stacking order (low to high): banners (1..banners.length, later
-   photos stack on top and crossfade in over earlier ones — see bannerOpacity
-   in Landing.tsx) < scrim (4) < heading/CTA content (5) < subheading/
-   progress (6) < intro mask (20). */
+/* Hero stacking order (low to high): banners (1-2, the active one on top so
+   it fades in over whichever was showing before — see activeIndex in
+   Landing.tsx) < scrim (4) < heading/CTA content (5) < subheading/progress
+   (6) < intro mask (20). */
 .hero {
   position: sticky;
   top: 0;
@@ -24,6 +24,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: opacity 400ms ease;
   /* A slight, consistent grade across all three photos (a cartoon
      illustration and two real-photo rooms) so they read as one considered
      art direction rather than three mismatched source assets. */
@@ -55,6 +56,13 @@
   text-transform: uppercase;
   margin: 0;
   color: var(--color-bg);
+  /* Retriggers on every carousel tick because Landing.tsx keys this element
+     on the active banner, remounting it each swap. */
+  animation: heroHeadlineIn 400ms ease;
+}
+@keyframes heroHeadlineIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 .hero__sub {
   position: absolute;
@@ -183,11 +191,12 @@
   font-size: clamp(64px, 15vw, 210px);
   line-height: 0.88;
   /* Identical fixed-attachment background on all three lines means each
-     shows the slice of the truck photo that's actually behind it at that
-     point in the viewport — the letters read as one continuous window onto
-     the photo (not three separate crops), with the plain wall on the left
-     of the source photo showing through as white space behind M/H, and the
-     truck itself carrying through the remaining letters. */
+     shows the slice of the current carousel photo that's actually behind it
+     at that point in the viewport — the letters read as one continuous
+     window onto that photo, not three separate crops. Which photo (see
+     imageSrc in Landing.tsx) swaps every second along with the rest of the
+     carousel, so the mask flicks through the same truck/helmet/motorbike
+     loop as the revealed hero underneath it. */
   background-attachment: fixed;
   background-size: cover;
   background-position: center;
@@ -226,4 +235,6 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .intro-mask__hint svg { animation: none; }
+  .hero__step-heading { animation: none; }
+  .hero__slide { transition: none; }
 }
