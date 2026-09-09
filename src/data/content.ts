@@ -35,9 +35,9 @@ export const banners: Banner[] = [
     id: 'hero-banner-3',
     src: motorcycleMuralExtended,
     alt: 'Hand-painted motorcycle mural extending across a wall',
-    objectPosition: 'left bottom',
-    scale: 3.6,
-    transformOrigin: 'top left',
+    objectPosition: 'center',
+    scale: 1.2,
+    transformOrigin: 'center',
     headline: 'Man cave.',
   },
 ];
