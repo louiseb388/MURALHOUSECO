@@ -7,13 +7,15 @@ export type Banner = {
   src: string;
   alt: string;
   objectPosition: string;
+  /** Extra zoom beyond the square crop's plain object-fit: cover, for a
+   *  tighter, closer-in look. 1 = no extra zoom. */
+  scale: number;
   headline: string;
   /** Where this tile's "Learn more" links to. */
   href: string;
   /** Override for narrow (portrait phone) viewports, where the tiles stack
    *  full-width instead of sitting side by side — object-fit: cover crops
-   *  very differently at that aspect ratio, so a crop tuned for the narrow
-   *  desktop tile can end up showing the wrong part of the photo. */
+   *  differently once the square's own width changes at that breakpoint. */
   objectPositionMobile?: string;
 };
 
@@ -23,6 +25,7 @@ export const banners: Banner[] = [
     src: truckMuralCutout,
     alt: "Hand-painted monster truck wall mural in a child's bedroom",
     objectPosition: 'center',
+    scale: 1.15,
     headline: 'Kids rooms.',
     href: '/residential-murals',
   },
@@ -31,6 +34,7 @@ export const banners: Banner[] = [
     src: helmetMural,
     alt: 'Hand-painted American football helmet mural in a commercial space',
     objectPosition: 'center',
+    scale: 1.1,
     headline: 'Commercial.',
     href: '/commercial-wall-murals',
   },
@@ -39,6 +43,7 @@ export const banners: Banner[] = [
     src: motorcycleMural,
     alt: 'Hand-painted motorcycle mural extending across a wall',
     objectPosition: 'center',
+    scale: 1.15,
     headline: 'Man cave.',
     href: '/residential-murals',
   },

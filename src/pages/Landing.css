@@ -19,11 +19,16 @@
   z-index: 2;
   inset: 0;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(16px, 3vw, 40px);
+  padding: 0 var(--container-pad);
 }
 .hero__tile {
   position: relative;
-  flex: 1;
-  min-width: 0;
+  flex: 1 1 0;
+  max-width: 440px;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
   display: block;
   color: inherit;
@@ -35,6 +40,10 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* Base zoom set per-banner (see Banner.scale in content.ts) via this
+     custom property, so the hover rule below can zoom in further from
+     wherever that base already is instead of fighting an inline transform. */
+  transform: scale(var(--tile-scale, 1));
   transition: transform 500ms ease;
   /* A slight, consistent grade across all three photos (a cartoon
      illustration and two real-photo rooms) so they read as one considered
@@ -43,7 +52,7 @@
 }
 .hero__tile:hover .hero__tile-img,
 .hero__tile:focus-visible .hero__tile-img {
-  transform: scale(1.07);
+  transform: scale(calc(var(--tile-scale, 1) * 1.06));
 }
 .hero__tile-scrim {
   position: absolute;
@@ -67,12 +76,13 @@
   text-align: center;
 }
 .hero__tile-heading {
-  font-size: clamp(26px, 3.4vw, 42px);
+  font-size: clamp(26px, 4.2vw, 38px);
   line-height: 1.05;
   letter-spacing: -0.01em;
   text-transform: uppercase;
   margin: 0;
   color: var(--color-bg);
+  white-space: nowrap;
 }
 .hero__tile-cta {
   opacity: 0.92;
@@ -87,9 +97,15 @@
 }
 
 @media (max-width: 720px) {
-  .hero__tiles { flex-direction: column; }
-  .hero__tile-content { gap: 14px; }
-  .hero__tile-heading { font-size: clamp(24px, 7vw, 36px); }
+  /* .hero is a fixed 100vh with overflow: hidden, so on mobile the 3 tiles
+     stack inside that same fixed budget — sizing each tile square from the
+     viewport WIDTH (as on desktop) would make 3 of them add up to far more
+     than 100vh and the last tile would simply be clipped off. Sizing from
+     the available HEIGHT instead keeps all 3 on screen and square. */
+  .hero__tiles { flex-direction: column; padding: 16px 20px; gap: 16px; }
+  .hero__tile { flex: none; width: auto; max-width: 100%; height: calc((100vh - 64px) / 3); }
+  .hero__tile-content { gap: 10px; }
+  .hero__tile-heading { font-size: clamp(18px, 6vw, 26px); }
 }
 
 /* — "How it works": big numeral steps in a horizontal line, centered

@@ -109,7 +109,7 @@ export function Landing() {
                     alt={banner.alt}
                     fetchPriority={fetchPriority}
                     className="hero__tile-img"
-                    style={{ objectPosition }}
+                    style={{ objectPosition, '--tile-scale': banner.scale } as React.CSSProperties}
                   />
                   <div className="hero__tile-scrim" />
                   <div className="hero__tile-content">
