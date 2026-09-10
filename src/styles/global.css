@@ -133,19 +133,20 @@ figcaption {
   color: color-mix(in srgb, var(--color-text) 70%, transparent);
 }
 .input {
-  width: 100%; min-height: 36px; padding: 6px 10px; font: inherit;
+  width: 100%; min-height: 48px; padding: 13px 16px; font: inherit;
   font-size: 14px; color: var(--color-text); caret-color: var(--color-accent);
-  background: var(--color-surface);
-  border: 1px solid var(--color-divider); border-radius: var(--radius-md);
+  background: var(--color-bg);
+  border: 1px solid var(--color-divider); border-radius: 10px;
+  box-shadow: 0 1px 2px color-mix(in srgb, #2d2b2b 6%, transparent);
   transition: border-color 150ms ease, box-shadow 150ms ease;
 }
 .input:hover { border-color: color-mix(in srgb, var(--color-text) 45%, transparent); }
 .input:focus-visible {
   border-color: var(--color-accent);
   outline-offset: 0;
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 15%, transparent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-accent) 12%, transparent);
 }
-textarea.input { min-height: 90px; resize: vertical; font-family: inherit; }
+textarea.input { min-height: 130px; resize: vertical; font-family: inherit; }
 
 /* — dialog — */
 .dialog-backdrop {

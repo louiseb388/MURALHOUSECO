@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ScrollToTop } from './components/ScrollToTop';
 import { StructuredData } from './components/StructuredData';
@@ -11,6 +12,7 @@ export default function App() {
     <BrowserRouter>
       <ScrollToTop />
       <StructuredData />
+      <Analytics />
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/process" element={<Process />} />

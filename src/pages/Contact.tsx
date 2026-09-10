@@ -3,7 +3,6 @@ import { NavBar } from '../components/NavBar';
 import { Footer } from '../components/Footer';
 import { CONTACT_EMAIL } from '../data/content';
 import { useSEO } from '../hooks/useSEO';
-import './Contact.css';
 
 export function Contact() {
   useSEO({
