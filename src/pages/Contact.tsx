@@ -52,74 +52,74 @@ export function Contact() {
       <NavBar />
 
       <div className="container">
-        <section className="page-header">
-          <h1>Get in touch</h1>
-          <p>We usually reply within 2 business days.</p>
-        </section>
+        {status === 'sent' ? (
+          <section className="page-header">
+            <h1>Message sent</h1>
+            <p>Thanks{nameSuffix}, we'll reply within 2 business days.</p>
+          </section>
+        ) : (
+          <>
+            <section className="page-header">
+              <h1>Get in touch</h1>
+              <p>We usually reply within 2 business days.</p>
+            </section>
 
-        <section style={{ padding: '56px 0 64px', maxWidth: 480 }}>
-          {status === 'sent' ? (
-            <div>
-              <h2 style={{ fontSize: 26, margin: '0 0 12px' }}>Message sent</h2>
-              <p style={{ fontSize: 15.5, lineHeight: 1.6, opacity: 0.85, maxWidth: '48ch' }}>
-                Thanks{nameSuffix}, we'll reply within 2 business days.
-              </p>
-            </div>
-          ) : (
-            <form className="contact-form" style={{ display: 'grid', gap: 14 }} onSubmit={handleSubmit}>
-              <div className="field">
-                <label htmlFor="c-name">Name</label>
-                <input className="input" id="c-name" value={name} onChange={(e) => setName(e.target.value)} required />
-              </div>
-              <div className="field">
-                <label htmlFor="c-email">Email</label>
-                <input
-                  className="input"
-                  id="c-email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="field">
-                <label htmlFor="c-message">Message</label>
-                <textarea
-                  className="input"
-                  id="c-message"
-                  rows={5}
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="field">
-                <label htmlFor="c-images">Attach images (optional)</label>
-                <input
-                  className="input"
-                  id="c-images"
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={(e) => setImages(Array.from(e.target.files ?? []))}
-                />
-                {images.length > 0 && (
-                  <p style={{ fontSize: 13, margin: '6px 0 0', opacity: 0.7 }}>
-                    {images.length} {images.length === 1 ? 'image' : 'images'} attached
+            <section style={{ padding: '56px 0 64px', maxWidth: 480 }}>
+              <form className="contact-form" style={{ display: 'grid', gap: 14 }} onSubmit={handleSubmit}>
+                <div className="field">
+                  <label htmlFor="c-name">Name</label>
+                  <input className="input" id="c-name" value={name} onChange={(e) => setName(e.target.value)} required />
+                </div>
+                <div className="field">
+                  <label htmlFor="c-email">Email</label>
+                  <input
+                    className="input"
+                    id="c-email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="field">
+                  <label htmlFor="c-message">Message</label>
+                  <textarea
+                    className="input"
+                    id="c-message"
+                    rows={5}
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="field">
+                  <label htmlFor="c-images">Attach images (optional)</label>
+                  <input
+                    className="input"
+                    id="c-images"
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={(e) => setImages(Array.from(e.target.files ?? []))}
+                  />
+                  {images.length > 0 && (
+                    <p style={{ fontSize: 13, margin: '6px 0 0', opacity: 0.7 }}>
+                      {images.length} {images.length === 1 ? 'image' : 'images'} attached
+                    </p>
+                  )}
+                </div>
+                {status === 'error' && (
+                  <p style={{ fontSize: 13.5, margin: 0, color: '#b3261e' }}>
+                    Something went wrong sending your message. Please try again.
                   </p>
                 )}
-              </div>
-              {status === 'error' && (
-                <p style={{ fontSize: 13.5, margin: 0, color: '#b3261e' }}>
-                  Something went wrong sending your message. Please try again.
-                </p>
-              )}
-              <button type="submit" className="btn btn-primary btn-cta" disabled={status === 'sending'}>
-                {status === 'sending' ? 'Sending…' : 'Send message'}
-              </button>
-            </form>
-          )}
-        </section>
+                <button type="submit" className="btn btn-primary btn-cta" disabled={status === 'sending'}>
+                  {status === 'sending' ? 'Sending…' : 'Send message'}
+                </button>
+              </form>
+            </section>
+          </>
+        )}
       </div>
 
       <Footer />
