@@ -1,6 +1,6 @@
 import truckMuralCutout from '../assets/truck-mural-cutout.jpg';
 import helmetMuralSpot from '../assets/helmet-mural-spot.png';
-import motorcycleMuralExtended from '../assets/motorcycle-mural-extended.png';
+import motorcycleMural from '../assets/motorcycle-mural.jpg';
 
 export type Banner = {
   id: string;
@@ -36,13 +36,15 @@ export const banners: Banner[] = [
   },
   {
     id: 'hero-banner-3',
-    src: motorcycleMuralExtended,
+    src: motorcycleMural,
     alt: 'Hand-painted motorcycle mural extending across a wall',
     objectPosition: 'center',
     scale: 1.2,
     transformOrigin: 'center',
     headline: 'Man cave.',
-    blurBackground: true,
+    // This photo already has a real depth-of-field blur baked in behind
+    // the bike, unlike the previous source image — no need for the
+    // synthetic blurBackground treatment on top of it.
   },
 ];
 
