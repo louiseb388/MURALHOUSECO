@@ -158,12 +158,22 @@
 .how-it-works__num {
   font-family: var(--font-heading);
   font-weight: 800;
-  font-size: 48px;
+  font-size: clamp(72px, 9vw, 140px);
   line-height: 1;
   margin: 0 0 12px;
   color: var(--color-accent);
 }
-.how-it-works__item h3 { font-size: 20px; margin: 0 0 8px; }
+/* Matches .testimonial-quote's size and weight — unbolded, same as the
+   quote text, so this section's headings and the testimonial read as one
+   consistent (non-bold) typographic level. Only the numerals above stay
+   heavy. */
+.how-it-works__item h3 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: clamp(22px, 2.6vw, 30px);
+  line-height: 1.2;
+  margin: 0 0 8px;
+}
 .how-it-works__item p { font-size: 14.5px; line-height: 1.6; margin: 0 auto; max-width: 32ch; opacity: 0.85; }
 @media (max-width: 900px) {
   .how-it-works { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -191,7 +201,7 @@
 
 .testimonial-quote {
   font-family: var(--font-heading);
-  font-weight: 800;
+  font-weight: 400;
   font-size: clamp(22px, 2.6vw, 30px);
   line-height: 1.5;
   letter-spacing: -0.015em;
@@ -204,6 +214,7 @@
   color: color-mix(in srgb, var(--color-text) 70%, transparent);
 }
 .testimonial-controls { display: flex; align-items: center; gap: 16px; margin-top: 28px; }
+.testimonial-controls .btn-icon { border-radius: 50%; }
 .testimonial-dots { display: flex; gap: 8px; }
 .testimonial-dot {
   width: 8px; height: 8px; padding: 0; border: none; cursor: pointer;

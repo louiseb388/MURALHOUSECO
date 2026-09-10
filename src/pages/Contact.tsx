@@ -3,6 +3,7 @@ import { NavBar } from '../components/NavBar';
 import { Footer } from '../components/Footer';
 import { CONTACT_EMAIL } from '../data/content';
 import { useSEO } from '../hooks/useSEO';
+import './Contact.css';
 
 export function Contact() {
   useSEO({
@@ -34,9 +35,7 @@ export function Contact() {
           <p>We usually reply within 2 business days.</p>
         </section>
 
-        <hr className="hr" />
-
-        <section className="grid-2" style={{ padding: '48px 0 64px' }}>
+        <section className="grid-2" style={{ padding: '56px 0 64px' }}>
           {submitted ? (
             <div>
               <h2 style={{ fontSize: 26, margin: '0 0 12px' }}>Message sent</h2>
@@ -45,7 +44,7 @@ export function Contact() {
               </p>
             </div>
           ) : (
-            <form style={{ display: 'grid', gap: 14 }} onSubmit={handleSubmit}>
+            <form className="contact-form" style={{ display: 'grid', gap: 14 }} onSubmit={handleSubmit}>
               <div className="field">
                 <label htmlFor="c-name">Name</label>
                 <input className="input" id="c-name" value={name} onChange={(e) => setName(e.target.value)} required />
@@ -88,7 +87,7 @@ export function Contact() {
                   </p>
                 )}
               </div>
-              <button type="submit" className="btn btn-primary btn-block">
+              <button type="submit" className="btn btn-primary btn-cta">
                 Send message
               </button>
             </form>

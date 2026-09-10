@@ -14,6 +14,10 @@ import './Landing.css';
 // mount, independent of scroll, and loops forever.
 const CAROUSEL_INTERVAL_MS = 1000;
 
+// How long each testimonial stays on screen before auto-advancing. Longer
+// than the hero's since there's a full quote to read.
+const TESTIMONIAL_INTERVAL_MS = 5000;
+
 export function Landing() {
   useSEO({
     title: 'Hand-Painted Wall Murals in Surrey & West Sussex | Mural House Co.',
@@ -48,6 +52,15 @@ export function Landing() {
     }, CAROUSEL_INTERVAL_MS);
     return () => clearInterval(id);
   }, [isPaused]);
+
+  // Testimonials auto-advance on their own clock too; the prev/next arrows
+  // and dots below just override whichever one this timer currently has up.
+  useEffect(() => {
+    const id = setInterval(() => {
+      setTestimonialIndex((i) => (i + 1) % testimonials.length);
+    }, TESTIMONIAL_INTERVAL_MS);
+    return () => clearInterval(id);
+  }, []);
 
   // Scroll only ever does one thing here: lift the mask off the hero, from
   // 0 (fully down) to 1 (fully off). See .hero-scroll's height in
@@ -211,7 +224,11 @@ export function Landing() {
           <div className="how-it-works">
             {howItWorks.map((step, i) => (
               <div className="how-it-works__item" key={step.title}>
-                <p className="how-it-works__num">{i + 1}</p>
+                {/* A div, not a <p> — .how-it-works__item p's own rule
+                    (class+type, higher specificity than .how-it-works__num's
+                    single class) would otherwise win the font-size cascade
+                    and silently shrink this back down to body-copy size. */}
+                <div className="how-it-works__num">{i + 1}</div>
                 <h3>{step.title}</h3>
                 <p>{step.body}</p>
               </div>
