@@ -33,6 +33,17 @@ export function Landing() {
   const [isPaused, setIsPaused] = useState(false);
   const [maskProgress, setMaskProgress] = useState(0); // 0 = mask fully covers hero, 1 = fully lifted off
   const heroScrollRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Drives each banner's optional mobile crop override (see Banner type) —
+  // object-fit: cover crops very differently once the box goes portrait.
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 640px)');
+    setIsMobile(mq.matches);
+    const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
 
   // Read on mount only, matching the design's "?quote=1 auto-opens the wizard" behavior.
   useEffect(() => {
@@ -109,9 +120,10 @@ export function Landing() {
             // The truck (i === 0) is the LCP candidate — it's what paints
             // first, before any scroll or carousel movement.
             const fetchPriority = i === 0 ? 'high' : 'auto';
+            const scale = (isMobile ? banner.scaleMobile : undefined) ?? banner.scale;
             const photoStyle = {
-              objectPosition: banner.objectPosition,
-              transformOrigin: banner.transformOrigin,
+              objectPosition: (isMobile ? banner.objectPositionMobile : undefined) ?? banner.objectPosition,
+              transformOrigin: (isMobile ? banner.transformOriginMobile : undefined) ?? banner.transformOrigin,
             };
 
             if (banner.blurBackground) {
@@ -132,14 +144,14 @@ export function Landing() {
                     alt=""
                     aria-hidden="true"
                     className="hero__slide-bg"
-                    style={{ ...photoStyle, transform: `scale(${banner.scale * 1.08})` }}
+                    style={{ ...photoStyle, transform: `scale(${scale * 1.08})` }}
                   />
                   <img
                     src={banner.src}
                     alt={banner.alt}
                     fetchPriority={fetchPriority}
                     className="hero__slide-fg"
-                    style={{ ...photoStyle, transform: `scale(${banner.scale})` }}
+                    style={{ ...photoStyle, transform: `scale(${scale})` }}
                   />
                 </div>
               );
@@ -153,7 +165,7 @@ export function Landing() {
                 aria-hidden={!isActive}
                 className="hero__slide"
                 fetchPriority={fetchPriority}
-                style={{ ...photoStyle, opacity: isActive ? 1 : 0, zIndex: isActive ? 2 : 1, transform: `scale(${banner.scale})` }}
+                style={{ ...photoStyle, opacity: isActive ? 1 : 0, zIndex: isActive ? 2 : 1, transform: `scale(${scale})` }}
               />
             );
           })}

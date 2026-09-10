@@ -13,6 +13,14 @@ export type Banner = {
   /** Renders the photo with its background blurred behind a sharp center,
    *  for a depth-of-field look, instead of one flat sharp image. */
   blurBackground?: boolean;
+  /** Overrides for narrow (portrait phone) viewports. object-fit: cover
+   *  crops very differently once the box goes from landscape to portrait,
+   *  so a crop tuned for wide desktop framing can end up showing a
+   *  near-random corner of the photo on a phone — these let a banner pick
+   *  a separate crop for that case instead of reusing the desktop one. */
+  objectPositionMobile?: string;
+  scaleMobile?: number;
+  transformOriginMobile?: string;
 };
 
 export const banners: Banner[] = [
@@ -24,15 +32,22 @@ export const banners: Banner[] = [
     scale: 1.183,
     transformOrigin: 'top right',
     headline: 'Kids rooms.',
+    objectPositionMobile: '75% center',
+    scaleMobile: 1.05,
+    transformOriginMobile: 'center',
   },
   {
     id: 'hero-banner-2',
     src: helmetMural,
     alt: 'Hand-painted American football helmet mural in a commercial space',
-    objectPosition: 'center',
-    scale: 1.183,
+    objectPosition: '60% center',
+    scale: 1,
     transformOrigin: 'top left',
     headline: 'Commercial.',
+    // Mobile's narrower, taller box already shows the whole helmet at the
+    // plain centered crop — only the wide desktop box was cutting off its
+    // right-hand facemask, so lock mobile to what already worked.
+    objectPositionMobile: 'center',
   },
   {
     id: 'hero-banner-3',
