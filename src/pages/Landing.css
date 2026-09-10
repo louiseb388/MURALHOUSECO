@@ -288,6 +288,11 @@
   align-items: center;
   gap: 4px;
   color: var(--color-bg);
+  /* Purely decorative (aria-hidden) and spans the full viewport width, so
+     without this it keeps intercepting clicks under it — invisibly, once
+     faded to opacity 0 — everywhere from the moment it mounts to the
+     bottom of the page, footer links included. */
+  pointer-events: none;
 }
 .intro-mask__hint span {
   font-size: 12px;
