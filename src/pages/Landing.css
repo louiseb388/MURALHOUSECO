@@ -1,16 +1,12 @@
 /* The hero is pinned (sticky) for the height of .hero-scroll: 100vh to fill
    the viewport, plus 100vh of scroll room to lift the mask off (see
    maskProgress in Landing.tsx — the two must stay in sync). That's the only
-   thing scroll drives here; the photo/headline carousel underneath runs on
-   its own timer regardless of scroll position. */
+   thing scroll drives here; the three tiles underneath are static. */
 .hero-scroll {
   position: relative;
   height: 200vh;
 }
-/* Hero stacking order (low to high): banners (1-2, the active one on top so
-   it fades in over whichever was showing before — see activeIndex in
-   Landing.tsx) < scrim (4) < heading/CTA content (5) < subheading/progress
-   (6) < intro mask (20). */
+/* Hero stacking order (low to high): tiles (2) < intro mask (20). */
 .hero {
   position: sticky;
   top: 0;
@@ -18,127 +14,82 @@
   overflow: hidden;
   background: var(--color-text);
 }
-.hero__slide {
+.hero__tiles {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  display: flex;
+}
+.hero__tile {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+.hero__tile-img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: opacity 400ms ease;
+  transition: transform 500ms ease;
   /* A slight, consistent grade across all three photos (a cartoon
      illustration and two real-photo rooms) so they read as one considered
-     art direction rather than three mismatched source assets. Also doubles
-     as the wrapper for the two-layer blurBackground banners (see below) —
-     applied once here to the whole composited pair rather than to each
-     layer separately. */
+     art direction rather than three mismatched source assets. */
   filter: saturate(0.88) contrast(1.05);
 }
-/* Depth-of-field treatment for banners with blurBackground: true (see
-   content.ts) — a blurred copy of the photo behind a sharp copy that's
-   radially masked to a soft-edged circle in the middle, so the center
-   reads sharp while the surrounding wall falls out of focus. */
-.hero__slide-bg,
-.hero__slide-fg {
+.hero__tile:hover .hero__tile-img,
+.hero__tile:focus-visible .hero__tile-img {
+  transform: scale(1.07);
+}
+.hero__tile-scrim {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  background: linear-gradient(180deg, rgba(20, 18, 17, 0.15) 0%, rgba(20, 18, 17, 0.3) 55%, rgba(20, 18, 17, 0.78) 100%);
+  transition: background-color 250ms ease;
 }
-.hero__slide-bg {
-  filter: blur(16px);
+.hero__tile:hover .hero__tile-scrim,
+.hero__tile:focus-visible .hero__tile-scrim {
+  background: linear-gradient(180deg, rgba(20, 18, 17, 0.32) 0%, rgba(20, 18, 17, 0.45) 55%, rgba(20, 18, 17, 0.85) 100%);
 }
-.hero__slide-fg {
-  mask-image: radial-gradient(ellipse 42% 42% at center, black 55%, transparent 92%);
-  -webkit-mask-image: radial-gradient(ellipse 42% 42% at center, black 55%, transparent 92%);
-}
-.hero__scrim {
+.hero__tile-content {
   position: absolute;
-  z-index: 4;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(20, 18, 17, 0.45) 0%, rgba(20, 18, 17, 0.35) 40%, rgba(20, 18, 17, 0.88) 100%);
-  pointer-events: none;
-}
-.hero__content {
-  position: absolute;
-  z-index: 5;
   inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 24px;
-  padding: 0 var(--container-pad);
+  padding: 0 20px;
   text-align: center;
 }
-.hero__step-heading {
-  font-size: clamp(52px, 11vw, 140px);
-  line-height: 1.0;
-  letter-spacing: -0.02em;
+.hero__tile-heading {
+  font-size: clamp(26px, 3.4vw, 42px);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
   text-transform: uppercase;
   margin: 0;
   color: var(--color-bg);
-  /* Retriggers on every carousel tick because Landing.tsx keys this element
-     on the active banner, remounting it each swap. */
-  animation: heroHeadlineIn 400ms ease;
 }
-@keyframes heroHeadlineIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+.hero__tile-cta {
+  opacity: 0.92;
+  transition: opacity 200ms ease, transform 200ms ease, background-color 150ms ease, box-shadow 150ms ease;
 }
-.hero__sub {
-  position: absolute;
-  z-index: 6;
-  left: var(--container-pad);
-  right: var(--container-pad);
-  bottom: 20px;
-  font-size: 17px;
-  line-height: 1.6;
-  max-width: 58ch;
-  margin: 0 auto;
-  color: var(--color-bg);
-  opacity: 0.9;
-  text-align: center;
+.hero__tile:hover .hero__tile-cta,
+.hero__tile:focus-visible .hero__tile-cta {
+  opacity: 1;
+  transform: translateY(-3px);
+  background: var(--color-accent-600);
+  box-shadow: var(--shadow-md);
 }
-.hero__controls {
-  position: absolute;
-  z-index: 6;
-  left: 0;
-  right: 0;
-  bottom: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-}
-.hero__control-btn {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  border: 1px solid rgba(255, 255, 255, 0.45);
-  background: rgba(20, 18, 17, 0.35);
-  color: var(--color-bg);
-  cursor: pointer;
-  transition: background-color 150ms ease, border-color 150ms ease, transform 100ms ease;
-}
-.hero__control-btn:hover { background: rgba(20, 18, 17, 0.55); border-color: rgba(255, 255, 255, 0.8); }
-.hero__control-btn:active { transform: scale(0.92); }
-.hero__progress {
-  position: absolute;
-  z-index: 6;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-}
-.hero__progress-seg {
-  flex: 1;
-  height: 3px;
-  transition: background-color 250ms ease;
+
+@media (max-width: 720px) {
+  .hero__tiles { flex-direction: column; }
+  .hero__tile-content { gap: 14px; }
+  .hero__tile-heading { font-size: clamp(24px, 7vw, 36px); }
 }
 
 /* — "How it works": big numeral steps in a horizontal line, centered
@@ -307,6 +258,5 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .intro-mask__hint svg { animation: none; }
-  .hero__step-heading { animation: none; }
-  .hero__slide { transition: none; }
+  .hero__tile-img { transition: none; }
 }

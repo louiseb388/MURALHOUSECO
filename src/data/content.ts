@@ -7,20 +7,14 @@ export type Banner = {
   src: string;
   alt: string;
   objectPosition: string;
-  scale: number;
-  transformOrigin: string;
   headline: string;
-  /** Renders the photo with its background blurred behind a sharp center,
-   *  for a depth-of-field look, instead of one flat sharp image. */
-  blurBackground?: boolean;
-  /** Overrides for narrow (portrait phone) viewports. object-fit: cover
-   *  crops very differently once the box goes from landscape to portrait,
-   *  so a crop tuned for wide desktop framing can end up showing a
-   *  near-random corner of the photo on a phone — these let a banner pick
-   *  a separate crop for that case instead of reusing the desktop one. */
+  /** Where this tile's "Learn more" links to. */
+  href: string;
+  /** Override for narrow (portrait phone) viewports, where the tiles stack
+   *  full-width instead of sitting side by side — object-fit: cover crops
+   *  very differently at that aspect ratio, so a crop tuned for the narrow
+   *  desktop tile can end up showing the wrong part of the photo. */
   objectPositionMobile?: string;
-  scaleMobile?: number;
-  transformOriginMobile?: string;
 };
 
 export const banners: Banner[] = [
@@ -28,38 +22,25 @@ export const banners: Banner[] = [
     id: 'hero-banner-1',
     src: truckMuralCutout,
     alt: "Hand-painted monster truck wall mural in a child's bedroom",
-    objectPosition: 'top right',
-    scale: 1.183,
-    transformOrigin: 'top right',
+    objectPosition: 'center',
     headline: 'Kids rooms.',
-    objectPositionMobile: '75% center',
-    scaleMobile: 1.05,
-    transformOriginMobile: 'center',
+    href: '/residential-murals',
   },
   {
     id: 'hero-banner-2',
     src: helmetMural,
     alt: 'Hand-painted American football helmet mural in a commercial space',
-    objectPosition: '60% center',
-    scale: 1,
-    transformOrigin: 'top left',
+    objectPosition: 'center',
     headline: 'Commercial.',
-    // Mobile's narrower, taller box already shows the whole helmet at the
-    // plain centered crop — only the wide desktop box was cutting off its
-    // right-hand facemask, so lock mobile to what already worked.
-    objectPositionMobile: 'center',
+    href: '/commercial-wall-murals',
   },
   {
     id: 'hero-banner-3',
     src: motorcycleMural,
     alt: 'Hand-painted motorcycle mural extending across a wall',
     objectPosition: 'center',
-    scale: 1.2,
-    transformOrigin: 'center',
     headline: 'Man cave.',
-    // This photo already has a real depth-of-field blur baked in behind
-    // the bike, unlike the previous source image — no need for the
-    // synthetic blurBackground treatment on top of it.
+    href: '/residential-murals',
   },
 ];
 

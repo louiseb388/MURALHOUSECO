@@ -1,21 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { NavBar } from '../components/NavBar';
 import { Footer } from '../components/Footer';
 import { QuoteWizard } from '../components/QuoteWizard';
 import { IntroMask } from '../components/IntroMask';
-import { ChevronLeftIcon, ChevronRightIcon, PauseIcon, PlayIcon } from '../components/Icons';
+import { ChevronLeftIcon, ChevronRightIcon } from '../components/Icons';
 import { banners, howItWorks, testimonials } from '../data/content';
 import { useSEO } from '../hooks/useSEO';
 import './Landing.css';
 
-// How long each hero photo (and its matching headline) stays on screen
-// before the carousel flicks to the next one. Runs on its own clock from
-// mount, independent of scroll, and loops forever.
-const CAROUSEL_INTERVAL_MS = 1000;
-
-// How long each testimonial stays on screen before auto-advancing. Longer
-// than the hero's since there's a full quote to read.
+// How long each testimonial stays on screen before auto-advancing.
 const TESTIMONIAL_INTERVAL_MS = 5000;
 
 export function Landing() {
@@ -29,8 +23,6 @@ export function Landing() {
   const [searchParams] = useSearchParams();
   const [wizardOpen, setWizardOpen] = useState(false);
   const [testimonialIndex, setTestimonialIndex] = useState(0);
-  const [activeIndex, setActiveIndex] = useState(0); // which banner the carousel is currently showing
-  const [isPaused, setIsPaused] = useState(false);
   const [maskProgress, setMaskProgress] = useState(0); // 0 = mask fully covers hero, 1 = fully lifted off
   const heroScrollRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
@@ -50,19 +42,6 @@ export function Landing() {
     if (searchParams.get('quote') === '1') setWizardOpen(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // The photo/headline carousel: advances on its own clock, not tied to
-  // scroll, so it's already cycling behind the mask before the user does
-  // anything, and keeps looping once revealed. Pausing tears the interval
-  // down instead of merely skipping a tick, so resuming always gives a
-  // full fresh interval rather than firing on whatever was left over.
-  useEffect(() => {
-    if (isPaused) return;
-    const id = setInterval(() => {
-      setActiveIndex((i) => (i + 1) % banners.length);
-    }, CAROUSEL_INTERVAL_MS);
-    return () => clearInterval(id);
-  }, [isPaused]);
 
   // Testimonials auto-advance on their own clock too; the prev/next arrows
   // and dots below just override whichever one this timer currently has up.
@@ -100,10 +79,6 @@ export function Landing() {
     };
   }, []);
 
-  const activeBanner = banners[activeIndex];
-  const nextBanner = () => setActiveIndex((i) => (i + 1) % banners.length);
-  const prevBanner = () => setActiveIndex((i) => (i - 1 + banners.length) % banners.length);
-
   const nextTestimonial = () => setTestimonialIndex((i) => (i + 1) % testimonials.length);
   const prevTestimonial = () => setTestimonialIndex((i) => (i - 1 + testimonials.length) % testimonials.length);
 
@@ -115,108 +90,39 @@ export function Landing() {
 
       <div ref={heroScrollRef} className="hero-scroll">
         <div className="hero">
-          {banners.map((banner, i) => {
-            const isActive = i === activeIndex;
-            // The truck (i === 0) is the LCP candidate — it's what paints
-            // first, before any scroll or carousel movement.
-            const fetchPriority = i === 0 ? 'high' : 'auto';
-            const scale = (isMobile ? banner.scaleMobile : undefined) ?? banner.scale;
-            const photoStyle = {
-              objectPosition: (isMobile ? banner.objectPositionMobile : undefined) ?? banner.objectPosition,
-              transformOrigin: (isMobile ? banner.transformOriginMobile : undefined) ?? banner.transformOrigin,
-            };
+          {/* The mask (see below) covers this visually until scrolled past,
+              but the tiles still need a real page heading underneath it —
+              each tile's own label is an h2, not an h1. */}
+          <h1 className="sr-only">Hand-painted wall murals in Surrey &amp; West Sussex</h1>
 
-            if (banner.blurBackground) {
+          <div className="hero__tiles">
+            {banners.map((banner, i) => {
+              // The truck (i === 0) is the LCP candidate — it's what paints
+              // first, before any scroll happens.
+              const fetchPriority = i === 0 ? 'high' : 'auto';
+              const objectPosition = (isMobile ? banner.objectPositionMobile : undefined) ?? banner.objectPosition;
+
               return (
-                <div
-                  key={banner.id}
-                  className="hero__slide"
-                  aria-hidden={!isActive}
-                  style={{ opacity: isActive ? 1 : 0, zIndex: isActive ? 2 : 1 }}
-                >
-                  {/* Blurred copy behind a sharp, radially-masked copy of the
-                      same photo — a depth-of-field look without needing a
-                      separately edited source image. Scaled up a touch extra
-                      so the blur doesn't sample past its own edge into
-                      nothing. */}
-                  <img
-                    src={banner.src}
-                    alt=""
-                    aria-hidden="true"
-                    className="hero__slide-bg"
-                    style={{ ...photoStyle, transform: `scale(${scale * 1.08})` }}
-                  />
+                <Link key={banner.id} to={banner.href} className="hero__tile">
                   <img
                     src={banner.src}
                     alt={banner.alt}
                     fetchPriority={fetchPriority}
-                    className="hero__slide-fg"
-                    style={{ ...photoStyle, transform: `scale(${scale})` }}
+                    className="hero__tile-img"
+                    style={{ objectPosition }}
                   />
-                </div>
+                  <div className="hero__tile-scrim" />
+                  <div className="hero__tile-content">
+                    <h2 className="hero__tile-heading">{banner.headline}</h2>
+                    <span className="btn btn-primary btn-cta hero__tile-cta">Learn more</span>
+                  </div>
+                </Link>
               );
-            }
-
-            return (
-              <img
-                key={banner.id}
-                src={banner.src}
-                alt={banner.alt}
-                aria-hidden={!isActive}
-                className="hero__slide"
-                fetchPriority={fetchPriority}
-                style={{ ...photoStyle, opacity: isActive ? 1 : 0, zIndex: isActive ? 2 : 1, transform: `scale(${scale})` }}
-              />
-            );
-          })}
-
-          <div className="hero__scrim" />
-
-          <div className="hero__content">
-            {/* Keyed on the active banner so each swap remounts the heading,
-                retriggering its fade-in animation — see @keyframes
-                heroHeadlineIn in Landing.css. Only one h1 ever exists at a
-                time, so the page keeps a single, unambiguous h1. */}
-            <h1 key={activeBanner.id} className="hero__step-heading">
-              {activeBanner.headline}
-            </h1>
-            <button type="button" className="btn btn-primary btn-cta" onClick={() => setWizardOpen(true)}>
-              Get started
-            </button>
+            })}
           </div>
 
-          <p className="hero__sub">Residential and commercial sites. Covering Surrey &amp; West Sussex.</p>
-
-          <div className="hero__controls">
-            <button type="button" className="hero__control-btn" aria-label="Previous photo" onClick={prevBanner}>
-              <ChevronLeftIcon size={18} />
-            </button>
-            <button
-              type="button"
-              className="hero__control-btn"
-              aria-label={isPaused ? 'Play carousel' : 'Pause carousel'}
-              onClick={() => setIsPaused((p) => !p)}
-            >
-              {isPaused ? <PlayIcon size={16} /> : <PauseIcon size={16} />}
-            </button>
-            <button type="button" className="hero__control-btn" aria-label="Next photo" onClick={nextBanner}>
-              <ChevronRightIcon size={18} />
-            </button>
-          </div>
-
-          <div className="hero__progress">
-            {banners.map((banner, i) => (
-              <div
-                key={banner.id}
-                className="hero__progress-seg"
-                style={{ background: i === activeIndex ? 'var(--color-bg)' : 'rgba(255,255,255,0.4)' }}
-              />
-            ))}
-          </div>
-
-          {/* Fixed on the first banner, not activeBanner — the mask is a
-              single static image behind all three words, independent of the
-              carousel ticking away underneath it. */}
+          {/* Fixed on the first banner — the mask is a single static image
+              behind all three words, independent of the tiles beneath it. */}
           <IntroMask progress={maskProgress} imageSrc={banners[0].src} />
         </div>
       </div>
