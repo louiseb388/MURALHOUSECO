@@ -230,6 +230,7 @@
   letter-spacing: -0.015em;
   margin: 0 0 24px;
   max-width: 18ch;
+  text-transform: uppercase;
 }
 
 /* — intro mask: covers the hero until scrolled away. Its transform is set

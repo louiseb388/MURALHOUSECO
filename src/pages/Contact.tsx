@@ -2,12 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { NavBar } from '../components/NavBar';
 import { Footer } from '../components/Footer';
 import { useSEO } from '../hooks/useSEO';
-
-// Web3Forms relays submissions straight to the business's inbox — this site
-// has no backend of its own to send mail from. The access key is meant to
-// be used client-side like this (it's not a secret; Web3Forms's own docs
-// embed it directly in a plain HTML form), so there's nothing to hide here.
-const WEB3FORMS_ACCESS_KEY = '7f8f15db-eaef-4644-8fa0-b5af2d4b06d0';
+import { submitToWeb3Forms } from '../lib/web3forms';
 
 type Status = 'idle' | 'sending' | 'sent' | 'error';
 
@@ -28,21 +23,11 @@ export function Contact() {
     e.preventDefault();
     setStatus('sending');
 
-    const formData = new FormData();
-    formData.append('access_key', WEB3FORMS_ACCESS_KEY);
-    formData.append('subject', `New enquiry from ${name} via Mural House website`);
-    formData.append('name', name);
-    formData.append('email', email);
-    formData.append('message', message);
-    images.forEach((file) => formData.append('attachment', file));
-
-    try {
-      const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: formData });
-      const result = await res.json();
-      setStatus(result.success ? 'sent' : 'error');
-    } catch {
-      setStatus('error');
-    }
+    const ok = await submitToWeb3Forms(
+      { subject: `New enquiry from ${name} via Mural House website`, name, email, message },
+      images,
+    );
+    setStatus(ok ? 'sent' : 'error');
   };
 
   const nameSuffix = name.trim() ? `, ${name.trim()}` : '';

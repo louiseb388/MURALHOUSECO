@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { PRICE_PER_SQM } from '../data/content';
+import { submitToWeb3Forms } from '../lib/web3forms';
 import { XIcon } from './Icons';
 
 type QuoteWizardProps = {
@@ -8,6 +9,7 @@ type QuoteWizardProps = {
 };
 
 type Step = 1 | 2 | 4;
+type SubmitStatus = 'idle' | 'sending' | 'error';
 
 export function QuoteWizard({ open, onClose }: QuoteWizardProps) {
   const [step, setStep] = useState<Step>(1);
@@ -20,6 +22,7 @@ export function QuoteWizard({ open, onClose }: QuoteWizardProps) {
   const [postcode, setPostcode] = useState('');
   const [brief, setBrief] = useState('');
   const [images, setImages] = useState<File[]>([]);
+  const [submitStatus, setSubmitStatus] = useState<SubmitStatus>('idle');
 
   // Every time the wizard is opened it restarts at step 1, but the form
   // fields themselves persist across an open/close cycle within a visit.
@@ -27,7 +30,10 @@ export function QuoteWizard({ open, onClose }: QuoteWizardProps) {
   // "reset state when a prop changes") avoids an extra effect-triggered render.
   if (open !== wasOpen) {
     setWasOpen(open);
-    if (open) setStep(1);
+    if (open) {
+      setStep(1);
+      setSubmitStatus('idle');
+    }
   }
 
   const width = parseFloat(widthM) || 0;
@@ -39,6 +45,31 @@ export function QuoteWizard({ open, onClose }: QuoteWizardProps) {
   const next2Disabled = !(name.trim() !== '' && email.includes('@') && brief.trim() !== '');
   const nameSuffix = name.trim() ? `, ${name.trim()}` : '';
   const stepNum = Math.min(step, 2);
+
+  const handleSubmit = async () => {
+    setSubmitStatus('sending');
+
+    const ok = await submitToWeb3Forms(
+      {
+        subject: `New instant quote request from ${name} via Mural House website`,
+        name,
+        email,
+        phone,
+        postcode,
+        wall_size: `${width}m × ${height}m (${sqm.toFixed(1)} m²)`,
+        estimated_price: `£${price.toLocaleString('en-GB')}`,
+        message: brief,
+      },
+      images,
+    );
+
+    if (ok) {
+      setSubmitStatus('idle');
+      setStep(4);
+    } else {
+      setSubmitStatus('error');
+    }
+  };
 
   return (
     <div
@@ -178,13 +209,23 @@ export function QuoteWizard({ open, onClose }: QuoteWizardProps) {
                   </p>
                 )}
               </div>
+              {submitStatus === 'error' && (
+                <p style={{ fontSize: 13.5, margin: 0, color: '#b3261e' }}>
+                  Something went wrong sending your request. Please try again.
+                </p>
+              )}
             </div>
             <div className="dialog-actions">
               <button type="button" className="btn btn-secondary" onClick={() => setStep(1)}>
                 Back
               </button>
-              <button type="button" className="btn btn-primary" disabled={next2Disabled} onClick={() => setStep(4)}>
-                Submit
+              <button
+                type="button"
+                className="btn btn-primary"
+                disabled={next2Disabled || submitStatus === 'sending'}
+                onClick={handleSubmit}
+              >
+                {submitStatus === 'sending' ? 'Sending…' : 'Submit'}
               </button>
             </div>
           </>
@@ -192,7 +233,7 @@ export function QuoteWizard({ open, onClose }: QuoteWizardProps) {
 
         {step === 4 && (
           <>
-            <div className="dialog-title">Message sent</div>
+            <div className="dialog-title" style={{ fontWeight: 400 }}>Message sent</div>
             <p style={{ fontSize: 15, lineHeight: 1.6, margin: '8px 0 0' }}>
               Thanks{nameSuffix} for your message. We'll be in touch within 2 business days.
             </p>
