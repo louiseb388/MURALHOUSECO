@@ -12,12 +12,20 @@ body {
   font-size: 15px;
   line-height: 1.55;
   font-weight: 400;
+  /* Explicit, not just the initial value — on some systems, requesting a
+     weight (e.g. 800) that isn't present as its own face in the installed
+     Helvetica Neue/Arial collection makes the browser's font-matching
+     substitute the italic member of the family instead of synthesizing
+     bold from the regular one. Stating font-style: normal here forces the
+     upright face regardless of what that matching picks for weight. */
+  font-style: normal;
   text-wrap: pretty;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   font-weight: var(--font-heading-weight);
+  font-style: normal;
   line-height: 1.12;
   letter-spacing: -0.015em;
   margin: 0 0 var(--space-2);
@@ -67,6 +75,7 @@ figcaption {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
   cursor: pointer; text-decoration: none; white-space: nowrap;
   font-family: var(--font-heading); font-weight: var(--font-heading-weight);
+  font-style: normal;
   font-size: 14px; line-height: 1.2; color: var(--color-text);
   background: transparent; border: 1px solid transparent;
   padding: var(--space-2) calc(var(--space-3) * 1.2);
@@ -189,6 +198,7 @@ textarea.input { min-height: 90px; resize: vertical; font-family: inherit; }
 .wordmark {
   font-family: var(--font-sans);
   font-weight: 800;
+  font-style: normal;
   text-transform: uppercase;
   letter-spacing: 0.01em;
 }
@@ -227,6 +237,11 @@ textarea.input { min-height: 90px; resize: vertical; font-family: inherit; }
 .kicker {
   display: block;
   font-size: 13px;
+  /* Explicit, not inherited — some kickers are <h2>s (Landing) and some are
+     <span>s (Process), and without this they'd pick up the h2's bold
+     heading weight while the spans stayed regular, so the same label
+     looked different weight depending on which page it was on. */
+  font-weight: 400;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--color-accent-700);
