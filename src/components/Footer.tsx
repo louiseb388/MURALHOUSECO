@@ -13,6 +13,8 @@ export function Footer({ noTopDivider }: FooterProps) {
         <div className="footer__links">
           <Link to="/process">Process</Link>
           <Link to="/faq">FAQ</Link>
+          <Link to="/residential-murals">Residential Murals</Link>
+          <Link to="/commercial-wall-murals">Commercial Murals</Link>
           <Link to="/contact">Contact</Link>
         </div>
       </footer>

@@ -165,3 +165,59 @@ export const faqItems: FaqItem[] = [
 ];
 
 export const PRICE_PER_SQM = 120;
+
+// Not an exhaustive administrative list — the well-known towns across each
+// county, for the locations page. See Locations.tsx for the "further
+// afield" note covering anywhere not listed here.
+export const surreyTowns = [
+  'Guildford',
+  'Woking',
+  'Epsom',
+  'Reigate',
+  'Redhill',
+  'Camberley',
+  'Farnham',
+  'Dorking',
+  'Leatherhead',
+  'Staines-upon-Thames',
+  'Esher',
+  'Weybridge',
+  'Godalming',
+  'Haslemere',
+  'Cranleigh',
+  'Caterham',
+  'Oxted',
+  'Banstead',
+  'Walton-on-Thames',
+  'Chertsey',
+  'Egham',
+  'Horley',
+  'Frimley',
+  'East Molesey',
+];
+
+export const westSussexTowns = [
+  'Chichester',
+  'Worthing',
+  'Crawley',
+  'Horsham',
+  'Bognor Regis',
+  'Haywards Heath',
+  'Burgess Hill',
+  'East Grinstead',
+  'Littlehampton',
+  'Shoreham-by-Sea',
+  'Midhurst',
+  'Petworth',
+  'Arundel',
+  'Billingshurst',
+  'Storrington',
+  'Henfield',
+  'Steyning',
+  'Pulborough',
+  'Selsey',
+  'Rustington',
+  'Southwater',
+  'Hurstpierpoint',
+  'Lancing',
+];

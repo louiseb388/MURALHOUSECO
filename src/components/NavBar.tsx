@@ -13,7 +13,10 @@ export function NavBar({ onQuoteClick }: NavBarProps) {
         <Link to="/" className="logo wordmark">
           Mural House Co.
         </Link>
-        <Link to="/contact" className="nav__link">
+        <Link to="/wall-murals-surrey-west-sussex" className="nav__link">
+          Locations
+        </Link>
+        <Link to="/contact" className="nav__link" style={{ marginLeft: 0 }}>
           Contact us
         </Link>
         {onQuoteClick ? (

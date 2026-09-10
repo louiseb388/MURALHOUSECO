@@ -305,6 +305,13 @@ textarea.input { min-height: 130px; resize: vertical; font-family: inherit; }
 .faq-item summary svg { flex: none; }
 .faq-item p { font-size: 15.5px; line-height: 1.6; opacity: 0.85; margin: 16px 0 0; max-width: 64ch; }
 
+/* — town list (Locations page) — */
+.town-list { list-style: none; margin: 0; padding: 0; columns: 2; column-gap: 28px; }
+.town-list li { font-size: 15px; line-height: 2.1; opacity: 0.85; break-inside: avoid; }
+@media (max-width: 480px) {
+  .town-list { columns: 1; }
+}
+
 /* — cookie consent banner — */
 .cookie-banner {
   position: fixed;

@@ -9,6 +9,9 @@ import { Landing } from './pages/Landing';
 import { Process } from './pages/Process';
 import { FAQ } from './pages/FAQ';
 import { Contact } from './pages/Contact';
+import { Locations } from './pages/Locations';
+import { ResidentialMurals } from './pages/ResidentialMurals';
+import { CommercialMurals } from './pages/CommercialMurals';
 
 export default function App() {
   const [analyticsEnabled, setAnalyticsEnabled] = useState(() => getStoredConsent() === 'accepted');
@@ -23,6 +26,9 @@ export default function App() {
         <Route path="/process" element={<Process />} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/wall-murals-surrey-west-sussex" element={<Locations />} />
+        <Route path="/residential-murals" element={<ResidentialMurals />} />
+        <Route path="/commercial-wall-murals" element={<CommercialMurals />} />
       </Routes>
       <CookieBanner onChoose={(consent) => setAnalyticsEnabled(consent === 'accepted')} />
     </BrowserRouter>
