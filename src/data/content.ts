@@ -1,5 +1,5 @@
 import truckMuralCutout from '../assets/truck-mural-cutout.jpg';
-import helmetMuralSpot from '../assets/helmet-mural-spot.png';
+import helmetMural from '../assets/helmet-mural.jfif';
 import motorcycleMural from '../assets/motorcycle-mural.jpg';
 
 export type Banner = {
@@ -27,8 +27,8 @@ export const banners: Banner[] = [
   },
   {
     id: 'hero-banner-2',
-    src: helmetMuralSpot,
-    alt: 'Hand-painted motorcycle helmet mural on a bedroom wall',
+    src: helmetMural,
+    alt: 'Hand-painted American football helmet mural in a commercial space',
     objectPosition: 'center',
     scale: 1.183,
     transformOrigin: 'top left',
