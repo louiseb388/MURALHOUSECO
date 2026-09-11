@@ -73,7 +73,7 @@ export function Process() {
               A 50% deposit is taken upfront to cover materials, with the remaining balance due on completion.
             </p>
             <Link to="/?quote=1" className="btn btn-primary btn-cta">
-              Quick quote
+              Quote me
             </Link>
           </div>
         </section>

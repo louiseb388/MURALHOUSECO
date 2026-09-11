@@ -199,7 +199,7 @@ export function Landing() {
             style={{ color: 'var(--color-bg)', borderColor: 'var(--color-bg)' }}
             onClick={() => setWizardOpen(true)}
           >
-            Quick quote
+            Quote me
           </button>
         </div>
       </section>

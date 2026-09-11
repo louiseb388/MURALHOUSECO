@@ -65,7 +65,7 @@ export function ResidentialMurals() {
             paint a thing. Most bedroom murals take one to three days on site.
           </p>
           <Link to="/?quote=1" className="btn btn-primary btn-cta">
-            Quick quote
+            Quote me
           </Link>
         </section>
       </div>
