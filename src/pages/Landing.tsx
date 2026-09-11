@@ -109,12 +109,17 @@ export function Landing() {
                     alt={banner.alt}
                     fetchPriority={fetchPriority}
                     className="hero__tile-img"
-                    style={{ objectPosition, '--tile-scale': banner.scale } as React.CSSProperties}
+                    style={
+                      {
+                        objectPosition,
+                        objectFit: banner.objectFit ?? 'cover',
+                        '--tile-scale': banner.scale,
+                      } as React.CSSProperties
+                    }
                   />
                   <div className="hero__tile-scrim" />
                   <div className="hero__tile-content">
                     <h2 className="hero__tile-heading">{banner.headline}</h2>
-                    <span className="btn btn-primary btn-cta hero__tile-cta">Learn more</span>
                   </div>
                 </Link>
               );
@@ -194,7 +199,7 @@ export function Landing() {
             style={{ color: 'var(--color-bg)', borderColor: 'var(--color-bg)' }}
             onClick={() => setWizardOpen(true)}
           >
-            Get started
+            Quick quote
           </button>
         </div>
       </section>

@@ -11,12 +11,16 @@ export type Banner = {
    *  tighter, closer-in look. 1 = no extra zoom. */
   scale: number;
   headline: string;
-  /** Where this tile's "Learn more" links to. */
+  /** Where this tile links to. */
   href: string;
   /** Override for narrow (portrait phone) viewports, where the tiles stack
    *  full-width instead of sitting side by side — object-fit: cover crops
    *  differently once the square's own width changes at that breakpoint. */
   objectPositionMobile?: string;
+  /** 'contain' shows the whole photo letterboxed instead of cropping it to
+   *  fill the square — for a source photo too wide (or with a subject too
+   *  tall) to crop to 1:1 without cutting part of it off. Default 'cover'. */
+  objectFit?: 'cover' | 'contain';
 };
 
 export const banners: Banner[] = [
@@ -42,8 +46,8 @@ export const banners: Banner[] = [
     id: 'hero-banner-3',
     src: motorcycleMural,
     alt: 'Hand-painted motorcycle mural extending across a wall',
-    objectPosition: 'center',
-    scale: 1.15,
+    objectPosition: '80% center',
+    scale: 1,
     headline: 'Man cave.',
     href: '/residential-murals',
   },

@@ -93,7 +93,7 @@ export function CommercialMurals() {
             a price.
           </p>
           <Link to="/?quote=1" className="btn btn-primary btn-cta">
-            Get started
+            Quick quote
           </Link>
         </section>
       </div>
